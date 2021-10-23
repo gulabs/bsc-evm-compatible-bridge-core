@@ -107,6 +107,7 @@ func (cfg DBConfig) Validate() {
 type ChainConfig struct {
 	BalanceMonitorInterval int64 `json:"balance_monitor_interval"`
 
+	SourceChainName                     string `json:"source_chain_name"`
 	SourceChainObserverFetchInterval    int64  `json:"source_chain_observer_fetch_interval"`
 	SourceChainStartHeight              int64  `json:"source_chain_start_height"`
 	SourceChainProvider                 string `json:"source_chain_provider"`
@@ -117,6 +118,7 @@ type ChainConfig struct {
 	SourceChainAlertThreshold           string `json:"source_chain_alert_threshold"`
 	SourceChainWaitMilliSecBetweenSwaps int64  `json:"source_chain_wait_milli_sec_between_swaps"`
 
+	DestinationChainName                     string `json:"destination_chain_name"`
 	DestinationChainObserverFetchInterval    int64  `json:"destination_chain_observer_fetch_interval"`
 	DestinationChainStartHeight              int64  `json:"destination_chain_start_height"`
 	DestinationChainProvider                 string `json:"destination_chain_provider"`
@@ -129,6 +131,9 @@ type ChainConfig struct {
 }
 
 func (cfg ChainConfig) Validate() {
+	if cfg.SourceChainName == "" {
+		panic("source_chain_name should not be empty")
+	}
 	if cfg.SourceChainStartHeight < 0 {
 		panic("source_chain_start_height should not be less than 0")
 	}
@@ -145,17 +150,20 @@ func (cfg ChainConfig) Validate() {
 		panic("source_chain_max_track_retry should be larger than 0")
 	}
 
+	if cfg.DestinationChainName == "" {
+		panic("destination_chain_name should not be empty")
+	}
 	if cfg.DestinationChainStartHeight < 0 {
-		panic("source_chain_start_height should not be less than 0")
+		panic("destination_chain_start_height should not be less than 0")
 	}
 	if cfg.DestinationChainProvider == "" {
-		panic("source_chain_provider should not be empty")
+		panic("destination_chain_provider should not be empty")
 	}
 	if !ethcom.IsHexAddress(cfg.DestinationChainSwapAgentAddr) {
 		panic(fmt.Sprintf("invalid destination_chain_swap_contract_addr: %s", cfg.DestinationChainSwapAgentAddr))
 	}
 	if cfg.DestinationChainConfirmNum <= 0 {
-		panic("source_chain_confirm_num should be larger than 0")
+		panic("destination_chain_confirm_num should be larger than 0")
 	}
 	if cfg.DestinationChainMaxTrackRetry <= 0 {
 		panic("destination_chain_max_track_retry should be larger than 0")

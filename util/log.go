@@ -29,7 +29,7 @@ func InitLogger(config LogConfig) {
 	backends := make([]logging.Backend, 0)
 
 	if config.UseConsoleLogger {
-		consoleFormat := logging.MustStringFormatter(`%{time:2006-01-02 15:04:05} %{level} %{shortfunc} %{message}`)
+		consoleFormat := logging.MustStringFormatter(`%{time:2006-01-02 15:04:05} %{level} %{longfunc} %{message}`)
 		consoleLogger := logging.NewLogBackend(os.Stdout, "", 0)
 		consoleFormatter := logging.NewBackendFormatter(consoleLogger, consoleFormat)
 		consoleLoggerLeveled := logging.AddModuleLevel(consoleFormatter)
@@ -45,7 +45,7 @@ func InitLogger(config LogConfig) {
 			MaxAge:     config.MaxAgeToRetainLogFilesInDays, // MaxAge is the maximum number of days to retain old log files
 			Compress:   config.Compress,
 		}, "", 0)
-		fileFormat := logging.MustStringFormatter(`%{time:2006-01-02 15:04:05} %{level} %{shortfunc} %{message}`)
+		fileFormat := logging.MustStringFormatter(`%{time:2006-01-02 15:04:05} %{level} %{longfunc} %{message}`)
 		fileFormatter := logging.NewBackendFormatter(fileLogger, fileFormat)
 		fileLoggerLeveled := logging.AddModuleLevel(fileFormatter)
 		fileLoggerLeveled.SetLevel(levels[config.Level], "")
