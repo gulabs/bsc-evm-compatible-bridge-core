@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model"
+	"github.com/synycboom/bsc-evm-compatible-bridge-core/observer"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )
 
@@ -98,6 +99,10 @@ func main() {
 	}
 	defer db.Close()
 	model.InitTables(db)
+
+	var sourceChainExecutor observer.Executor = nil
+	sourceChainObserver := observer.NewObserver(db, config.ChainConfig.SourceChainStartHeight, config.ChainConfig.SourceChainConfirmNum, config, sourceChainExecutor)
+	sourceChainObserver.Start()
 
 	select {}
 }
