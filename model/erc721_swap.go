@@ -9,22 +9,25 @@ import (
 )
 
 type ERC721SwapStartTxLog struct {
-	Id    int64
-	Chain string `gorm:"not null;index:swap_start_tx_log_chain"`
+	Id int64
 
-	TokenAddr   string `gorm:"not null"`
-	FromAddress string `gorm:"not null"`
-	TokenID     string `gorm:"not null"`
-	TokenURL    string `gorm:"not null"`
-	FeeAmount   string `gorm:"not null"`
+	DestinationChainName string `gorm:"not null;index:erc721_swap_start_tx_log_destination_chain_name"`
+	DestinationTokenAddr string `gorm:"not null"`
 
-	Status       TxStatus `gorm:"not null;index:swap_start_tx_log_status"`
-	TxHash       string   `gorm:"not null;index:swap_start_tx_log_tx_hash"`
+	SourceChainName string `gorm:"not null;index:erc721_swap_start_tx_log_source_chain_name"`
+	SourceTokenAddr string `gorm:"not null"`
+
+	TokenID   string `gorm:"not null"`
+	TokenURL  string `gorm:"not null"`
+	FeeAmount string `gorm:"not null"`
+
+	Status       TxStatus `gorm:"not null;index:erc721_swap_start_tx_log_status"`
+	TxHash       string   `gorm:"not null;index:erc721_swap_start_tx_log_tx_hash"`
 	BlockHash    string   `gorm:"not null"`
 	Height       int64    `gorm:"not null"`
 	ConfirmedNum int64    `gorm:"not null"`
 
-	Phase TxPhase `gorm:"not null;index:swap_start_tx_log_phase"`
+	Phase TxPhase `gorm:"not null;index:erc721_swap_start_tx_log_phase"`
 
 	UpdateTime int64
 	CreateTime int64
@@ -44,8 +47,8 @@ type ERC721SwapFillTx struct {
 	gorm.Model
 
 	Direction         common.SwapDirection `gorm:"not null"`
-	StartSwapTxHash   string               `gorm:"not null;index:swap_fill_tx_start_swap_tx_hash"`
-	FillSwapTxHash    string               `gorm:"not null;index:swap_fill_tx_fill_swap_tx_hash"`
+	StartSwapTxHash   string               `gorm:"not null;index:erc721_swap_fill_tx_start_swap_tx_hash"`
+	FillSwapTxHash    string               `gorm:"not null;index:erc721_swap_fill_tx_fill_swap_tx_hash"`
 	GasPrice          string               `gorm:"not null"`
 	ConsumedFeeAmount string
 	Height            int64
@@ -63,11 +66,13 @@ type ERC721RetrySwap struct {
 	Status               common.RetrySwapStatus `gorm:"not null"`
 	SwapID               uint                   `gorm:"not null"`
 	Direction            common.SwapDirection   `gorm:"not null"`
-	StartTxHash          string                 `gorm:"not null;index:retry_swap_start_tx_hash"`
+	StartTxHash          string                 `gorm:"not null;index:erc721_retry_swap_start_tx_hash"`
 	FillTxHash           string                 `gorm:"not null"`
-	Sponsor              string                 `gorm:"not null;index:retry_swap_sponsor"`
-	SourceTokenAddr      string                 `gorm:"not null;index:retry_swap_source_token_addr"`
-	DestinationTokenAddr string                 `gorm:"not null;index:retry_swap_destination_token_addr"`
+	Sponsor              string                 `gorm:"not null;index:erc721_retry_swap_sponsor"`
+	SourceTokenAddr      string                 `gorm:"not null;index:erc721_retry_swap_source_token_addr"`
+	SourceChainName      string                 `gorm:"not null;index:erc721_retry_swap_source_chain_name"`
+	DestinationTokenAddr string                 `gorm:"not null;index:erc721_retry_swap_destination_token_addr"`
+	DestinationChainName string                 `gorm:"not null;index:erc721_retry_swap_destination_chain_name"`
 	Symbol               string                 `gorm:"not null"`
 	TokenID              string                 `gorm:"not null"`
 	TokenURL             string                 `gorm:"not null"`
@@ -83,8 +88,8 @@ func (ERC721RetrySwap) TableName() string {
 type ERC721RetrySwapTx struct {
 	gorm.Model
 
-	RetrySwapID         uint                 `gorm:"not null;index:retry_swap_tx_retry_swap_id"`
-	StartTxHash         string               `gorm:"not null;index:retry_swap_tx_start_tx_hash"`
+	RetrySwapID         uint                 `gorm:"not null;index:erc721_retry_swap_tx_retry_swap_id"`
+	StartTxHash         string               `gorm:"not null;index:erc721_retry_swap_tx_start_tx_hash"`
 	Direction           common.SwapDirection `gorm:"not null"`
 	TrackRetryCounter   int64
 	RetryFillSwapTxHash string            `gorm:"not null"`
@@ -102,21 +107,26 @@ func (ERC721RetrySwapTx) TableName() string {
 type ERC721Swap struct {
 	gorm.Model
 
-	Status common.SwapStatus `gorm:"not null;index:swap_status"`
+	Status common.SwapStatus `gorm:"not null;index:erc721_swap_status"`
 	// the user addreess who start this swap
-	Sponsor string `gorm:"not null;index:swap_sponsor"`
+	Sponsor string `gorm:"not null;index:erc721_swap_sponsor"`
 
-	SourceTokenAddr      string `gorm:"not null;index:swap_source_token_addr"`
-	DestinationTokenAddr string `gorm:"not null;index:swap_destination_token_addr"`
-	Symbol               string
-	TokenID              string               `gorm:"not null"`
-	TokenURL             string               `gorm:"not null"`
-	Direction            common.SwapDirection `gorm:"not null;index:swap_direction"`
+	SourceTokenAddr string `gorm:"not null;index:erc721_swap_source_token_addr"`
+	SourceChainName string `gorm:"not null;index:erc721_swap_source_chain_name"`
+
+	DestinationTokenAddr string `gorm:"not null;index:erc721_swap_destination_token_addr"`
+	DestinationChainName string `gorm:"not null;index:erc721_swap_destination_chain_name"`
+
+	Symbol   string `gorm:"not null"`
+	TokenID  string `gorm:"not null"`
+	TokenURL string `gorm:"not null"`
+
+	Direction common.SwapDirection `gorm:"not null;index:erc721_swap_direction"`
 
 	// The tx hash confirmed deposit
-	StartTxHash string `gorm:"not null;index:swap_start_tx_hash"`
+	StartTxHash string `gorm:"not null;index:erc721_swap_start_tx_hash"`
 	// The tx hash confirmed withdraw
-	FillTxHash string `gorm:"not null;index:swap_fill_tx_hash"`
+	FillTxHash string `gorm:"not null;index:erc721_swap_fill_tx_hash"`
 
 	// used to log more message about how this swap failed or invalid
 	Log string

@@ -7,11 +7,6 @@ const (
 	ObserverPruneInterval  = 10 * time.Second
 	ObserverAlertInterval  = 5 * time.Second
 
-	ChainBSC = "BSC" // binance smart chain
-	ChainETH = "ETH" // ethereum
-
-	VaultName = "BSC_ETH_SWAP"
-
 	DBDialectMysql   = "mysql"
 	DBDialectSqlite3 = "sqlite3"
 
