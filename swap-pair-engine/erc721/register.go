@@ -316,7 +316,8 @@ func (e *Engine) manageTxSentRegistration() {
 	}
 
 	if err := e.deps.DB.Model(&ss).Where("id in ?", ids).Updates(map[string]interface{}{
-		"state": erc721.SwapPairStateCreationTxConfirmed,
+		"state":     erc721.SwapPairStateCreationTxConfirmed,
+		"available": true,
 	}).Error; err != nil {
 		util.Logger.Error(
 			errors.Wrapf(err, "[Engine.manageTxSentRegistration]: failed to update state '%s'", erc721.SwapPairStateCreationTxConfirmed),
