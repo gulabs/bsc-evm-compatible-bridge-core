@@ -13,7 +13,7 @@ import (
 type Config struct {
 	KeyManagerConfig KeyManagerConfig `json:"key_manager_config"`
 	DBConfig         DBConfig         `json:"db_config"`
-	ChainConfig      ChainConfig      `json:"chain_config"`
+	ChainConfigs     []ChainConfig    `json:"chain_configs"`
 	LogConfig        LogConfig        `json:"log_config"`
 	AlertConfig      AlertConfig      `json:"alert_config"`
 	AdminConfig      AdminConfig      `json:"admin_config"`
@@ -21,9 +21,19 @@ type Config struct {
 
 func (cfg *Config) Validate() {
 	cfg.DBConfig.Validate()
-	cfg.ChainConfig.Validate()
 	cfg.LogConfig.Validate()
 	cfg.AlertConfig.Validate()
+
+	ids := make(map[string]struct{})
+	for _, c := range cfg.ChainConfigs {
+		c.Validate()
+
+		if _, ok := ids[c.ID]; ok {
+			panic("chain id is duplicated")
+		}
+
+		ids[c.ID] = struct{}{}
+	}
 }
 
 type AlertConfig struct {
@@ -43,41 +53,35 @@ type KeyManagerConfig struct {
 	KeyType       string `json:"key_type"`
 	AWSRegion     string `json:"aws_region"`
 	AWSSecretName string `json:"aws_secret_name"`
-
-	// local keys
-	LocalHMACKey                    string `json:"local_hmac_key"`
-	LocalSourceChainPrivateKey      string `json:"local_source_chain_private_key"`
-	LocalDestinationChainPrivateKey string `json:"local_destination_chain_private_key"`
-	LocalAdminApiKey                string `json:"local_admin_api_key"`
-	LocalAdminSecretKey             string `json:"local_admin_secret_key"`
+	HMACKey       string `json:"hmac_key"`
 }
 
 type KeyConfig struct {
-	HMACKey                    string `json:"hmac_key"`
-	SourceChainPrivateKey      string `json:"source_chain_private_key"`
-	DestinationChainPrivateKey string `json:"destination_chain_private_key"`
-	AdminApiKey                string `json:"admin_api_key"`
-	AdminSecretKey             string `json:"admin_secret_key"`
+	HMACKey            string `json:"hmac_key"`
+	PrivateKey         string `json:"private_key"`
+	ETHChainPrivateKey string `json:"eth_private_key"`
+	AdminApiKey        string `json:"admin_api_key"`
+	AdminSecretKey     string `json:"admin_secret_key"`
 }
 
 func (cfg KeyManagerConfig) Validate() {
-	if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalHMACKey) == 0 {
+	if cfg.KeyType == common.LocalPrivateKey && len(cfg.HMACKey) == 0 {
 		panic("missing local hmac key")
 	}
-	if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalSourceChainPrivateKey) == 0 {
-		panic("missing local source chain private key")
-	}
-	if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalDestinationChainPrivateKey) == 0 {
-		panic("missing local destination chain private key")
-	}
+	// if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalPrivateKey) == 0 {
+	// 	panic("missing local source chain private key")
+	// }
+	// if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalETHChainPrivateKey) == 0 {
+	// 	panic("missing local destination chain private key")
+	// }
 
-	if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalAdminApiKey) == 0 {
-		panic("missing local admin api key")
-	}
+	// if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalAdminApiKey) == 0 {
+	// 	panic("missing local admin api key")
+	// }
 
-	if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalAdminSecretKey) == 0 {
-		panic("missing local admin secret key")
-	}
+	// if cfg.KeyType == common.LocalPrivateKey && len(cfg.LocalAdminSecretKey) == 0 {
+	// 	panic("missing local admin secret key")
+	// }
 
 	if cfg.KeyType == common.AWSPrivateKey && (cfg.AWSRegion == "" || cfg.AWSSecretName == "") {
 		panic("Missing aws key region or name")
@@ -85,88 +89,56 @@ func (cfg KeyManagerConfig) Validate() {
 }
 
 type TokenSecretKey struct {
-	Symbol                     string `json:"symbol"`
-	SourceChainPrivateKey      string `json:"source_chain_private_key"`
-	DestinationChainPrivateKey string `json:"destination_private_key"`
+	Symbol             string `json:"symbol"`
+	PrivateKey         string `json:"private_key"`
+	ETHChainPrivateKey string `json:"destination_private_key"`
 }
 
 type DBConfig struct {
-	Dialect string `json:"dialect"`
-	DBPath  string `json:"db_path"`
+	LogLevel string `json:"log_level"`
+	DSN      string `json:"dsn"`
 }
 
 func (cfg DBConfig) Validate() {
-	if cfg.Dialect != common.DBDialectMysql && cfg.Dialect != common.DBDialectSqlite3 {
-		panic(fmt.Sprintf("only %s and %s supported", common.DBDialectMysql, common.DBDialectSqlite3))
-	}
-	if cfg.DBPath == "" {
+	if cfg.DSN == "" {
 		panic("db path should not be empty")
 	}
 }
 
 type ChainConfig struct {
-	BalanceMonitorInterval int64 `json:"balance_monitor_interval"`
-
-	SourceChainName                     string `json:"source_chain_name"`
-	SourceChainObserverFetchInterval    int64  `json:"source_chain_observer_fetch_interval"`
-	SourceChainStartHeight              int64  `json:"source_chain_start_height"`
-	SourceChainProvider                 string `json:"source_chain_provider"`
-	SourceChainConfirmNum               int64  `json:"source_chain_confirm_num"`
-	SourceChainSwapAgentAddr            string `json:"source_chain_swap_agent_addr"`
-	SourceChainExplorerUrl              string `json:"source_chain_explorer_url"`
-	SourceChainMaxTrackRetry            int64  `json:"source_chain_max_track_retry"`
-	SourceChainAlertThreshold           string `json:"source_chain_alert_threshold"`
-	SourceChainWaitMilliSecBetweenSwaps int64  `json:"source_chain_wait_milli_sec_between_swaps"`
-
-	DestinationChainName                     string `json:"destination_chain_name"`
-	DestinationChainObserverFetchInterval    int64  `json:"destination_chain_observer_fetch_interval"`
-	DestinationChainStartHeight              int64  `json:"destination_chain_start_height"`
-	DestinationChainProvider                 string `json:"destination_chain_provider"`
-	DestinationChainConfirmNum               int64  `json:"destination_chain_confirm_num"`
-	DestinationChainSwapAgentAddr            string `json:"destination_chain_swap_agent_addr"`
-	DestinationChainExplorerUrl              string `json:"destination_chain_explorer_url"`
-	DestinationChainMaxTrackRetry            int64  `json:"destination_chain_max_track_retry"`
-	DestinationChainAlertThreshold           string `json:"destination_chain_alert_threshold"`
-	DestinationChainWaitMilliSecBetweenSwaps int64  `json:"destination_chain_wait_milli_sec_between_swaps"`
+	BalanceAlertThreshold  string `json:"balance_alert_threshold"`
+	BalanceMonitorInterval int64  `json:"balance_monitor_interval"`
+	ID                     string `json:"id"`
+	Name                   string `json:"name"`
+	ObserverFetchInterval  int64  `json:"observer_fetch_interval"`
+	StartHeight            int64  `json:"start_height"`
+	PrivateKey             string `json:"private_key"`
+	Provider               string `json:"provider"`
+	ConfirmNum             int64  `json:"confirm_num"`
+	SwapAgentAddr          string `json:"swap_agent_addr"`
+	ExplorerUrl            string `json:"explorer_url"`
+	MaxTrackRetry          int64  `json:"max_track_retry"`
+	WaitMilliSecBetweenTx  int64  `json:"wait_milli_sec_between_tx"`
 }
 
 func (cfg ChainConfig) Validate() {
-	if cfg.SourceChainName == "" {
-		panic("source_chain_name should not be empty")
+	if cfg.Name == "" {
+		panic("name should not be empty")
 	}
-	if cfg.SourceChainStartHeight < 0 {
-		panic("source_chain_start_height should not be less than 0")
+	if cfg.StartHeight < 0 {
+		panic("start_height should not be less than 0")
 	}
-	if cfg.SourceChainProvider == "" {
-		panic("source_chain_provider should not be empty")
+	if cfg.Provider == "" {
+		panic("provider should not be empty")
 	}
-	if cfg.SourceChainConfirmNum <= 0 {
-		panic("source_chain_confirm_num should be larger than 0")
+	if cfg.ConfirmNum <= 0 {
+		panic("confirm_num should be larger than 0")
 	}
-	if !ethcom.IsHexAddress(cfg.SourceChainSwapAgentAddr) {
-		panic(fmt.Sprintf("invalid source_chain_swap_contract_addr: %s", cfg.SourceChainSwapAgentAddr))
+	if !ethcom.IsHexAddress(cfg.SwapAgentAddr) {
+		panic(fmt.Sprintf("invalid swap_contract_addr: %s", cfg.SwapAgentAddr))
 	}
-	if cfg.SourceChainMaxTrackRetry <= 0 {
-		panic("source_chain_max_track_retry should be larger than 0")
-	}
-
-	if cfg.DestinationChainName == "" {
-		panic("destination_chain_name should not be empty")
-	}
-	if cfg.DestinationChainStartHeight < 0 {
-		panic("destination_chain_start_height should not be less than 0")
-	}
-	if cfg.DestinationChainProvider == "" {
-		panic("destination_chain_provider should not be empty")
-	}
-	if !ethcom.IsHexAddress(cfg.DestinationChainSwapAgentAddr) {
-		panic(fmt.Sprintf("invalid destination_chain_swap_contract_addr: %s", cfg.DestinationChainSwapAgentAddr))
-	}
-	if cfg.DestinationChainConfirmNum <= 0 {
-		panic("destination_chain_confirm_num should be larger than 0")
-	}
-	if cfg.DestinationChainMaxTrackRetry <= 0 {
-		panic("destination_chain_max_track_retry should be larger than 0")
+	if cfg.MaxTrackRetry <= 0 {
+		panic("max_track_retry should be larger than 0")
 	}
 }
 

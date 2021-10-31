@@ -3,15 +3,25 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math/big"
+	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
+	contractabi "github.com/synycboom/bsc-evm-compatible-bridge-core/abi"
+	"github.com/synycboom/bsc-evm-compatible-bridge-core/agent"
+	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
+	observer "github.com/synycboom/bsc-evm-compatible-bridge-core/evm-observer"
+	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/evm-recorder/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model"
-	"github.com/synycboom/bsc-evm-compatible-bridge-core/observer"
+	engine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-pair-engine/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )
 
@@ -89,20 +99,98 @@ func main() {
 	}
 	config.Validate()
 
-	// init logger
 	util.InitLogger(config.LogConfig)
 	util.InitTgAlerter(config.AlertConfig)
 
-	db, err := gorm.Open(config.DBConfig.Dialect, config.DBConfig.DBPath)
+	mysqlConn := mysql.New(mysql.Config{
+		DSN: config.DBConfig.DSN,
+	})
+	db, err := gorm.Open(mysqlConn, &gorm.Config{
+		Logger: logger.Default.LogMode(dbLogLevel(config.DBConfig.LogLevel)),
+	})
 	if err != nil {
-		panic(fmt.Sprintf("open db error, err=%s", err.Error()))
+		panic(errors.Wrap(err, "[main]: open db error"))
 	}
-	defer db.Close()
+
 	model.InitTables(db)
 
-	var sourceChainExecutor observer.Executor = nil
-	sourceChainObserver := observer.NewObserver(db, config.ChainConfig.SourceChainStartHeight, config.ChainConfig.SourceChainConfirmNum, config, sourceChainExecutor)
-	sourceChainObserver.Start()
+	swapAgents := make(map[string]agent.SwapAgent)
+	swapAgentAddresses := make(map[string]common.Address)
+	clients := make(map[string]client.ETHClient)
+	for _, c := range config.ChainConfigs {
+		ec, err := ethclient.Dial(c.Provider)
+		if err != nil {
+			panic(errors.Wrap(err, "[main]: new eth client error"))
+		}
+
+		swapAgentAddr := common.HexToAddress(c.SwapAgentAddr)
+		swapAgent, err := contractabi.NewERC721SwapAgent(swapAgentAddr, ec)
+		if err != nil {
+			panic(errors.Wrap(err, "[main]: failed to create swap agent"))
+		}
+
+		clients[c.ID] = client.NewClient(ec)
+		swapAgents[c.ID] = swapAgent
+		swapAgentAddresses[c.ID] = swapAgentAddr
+	}
+	for _, c := range config.ChainConfigs {
+		chainID := util.StrToBigInt(c.ID)
+		if chainID.Cmp(big.NewInt(0)) == 0 {
+			panic(errors.New("[main]: chain id is 0"))
+		}
+
+		// TODO: implement SwapAgent instance and implement mutex lock to prevent multiple calls
+		// TODO: send tg when logging has error
+		r := recorder.NewRecorder(&recorder.Config{
+			ChainID:   chainID,
+			ChainName: c.Name,
+			HMACKey:   config.KeyManagerConfig.HMACKey,
+		}, &recorder.Dependencies{
+			Client:    clients,
+			DB:        db.Session(&gorm.Session{}),
+			SwapAgent: swapAgents,
+		})
+		ob := observer.NewObserver(&observer.Config{
+			StartHeight:        c.StartHeight,
+			ConfirmNum:         c.ConfirmNum,
+			FetchInterval:      time.Duration(c.ObserverFetchInterval) * time.Second,
+			BlockUpdateTimeout: time.Duration(config.AlertConfig.BlockUpdateTimeout) * time.Second,
+		}, &observer.Dependencies{
+			DB:       db.Session(&gorm.Session{}),
+			Recorder: r,
+		})
+		ob.Start()
+
+		e := engine.NewEngine(&engine.Config{
+			ChainID:            chainID,
+			ConfirmNum:         c.ConfirmNum,
+			ExplorerURL:        c.ExplorerUrl,
+			PrivateKey:         c.PrivateKey,
+			MaxTrackRetry:      c.MaxTrackRetry,
+			SwapAgentAddresses: swapAgentAddresses,
+		}, &engine.Dependencies{
+			Client:    clients,
+			DB:        db.Session(&gorm.Session{}),
+			Recorder:  r,
+			SwapAgent: swapAgents,
+		})
+		e.Start()
+	}
 
 	select {}
+}
+
+func dbLogLevel(level string) logger.LogLevel {
+	switch level {
+	case "SILENT":
+		return logger.Silent
+	case "ERROR":
+		return logger.Error
+	case "WARN":
+		return logger.Warn
+	case "INFO":
+		return logger.Info
+	}
+
+	return logger.Warn
 }

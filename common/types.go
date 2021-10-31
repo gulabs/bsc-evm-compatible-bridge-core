@@ -19,11 +19,10 @@ type SwapPairStatus string
 type RetrySwapStatus string
 type SwapDirection string
 
-type BlockAndEventLogs struct {
+type Block struct {
 	Height          int64
 	Chain           string
 	BlockHash       string
 	ParentBlockHash string
 	BlockTime       int64
-	Events          []interface{}
 }
