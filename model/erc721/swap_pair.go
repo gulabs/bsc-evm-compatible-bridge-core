@@ -69,31 +69,6 @@ type SwapPair struct {
 	UpdatedAt time.Time
 }
 
-// type SwapPair struct {
-// 	ID string `gorm:"size:26;primary_key"`
-
-// 	Sponsor   string        `gorm:"not null"`
-// 	State     SwapPairState `gorm:"not null;index:state"`
-// 	Available bool          `gorm:"not null;index:avaiable"`
-// 	Signature string        `gorm:"not null"`
-// 	Symbol    string        `gorm:"not null"`
-
-// 	SrcChainID string `gorm:"not null;index:unique_registration,unique,priority:1;index:backward_swap,priorrity:1"`
-// 	DstChainID string `gorm:"not null;index:unique_registration,unique,priority:2;index:backward_swap,priorrity:2"`
-
-// 	SrcTokenAddr string `gorm:"not null;index:unique_registration,unique,priority:3"`
-// 	DstTokenAddr string `gorm:"not null;index:backward_swap,priorrity:3"`
-
-// 	SrcTokenName string `gorm:"not null"`
-// 	DstTokenName string `gorm:"not null"`
-
-// 	PairRegisterTxHash string
-// 	PairCreateTxHash   string
-
-// 	CreatedAt time.Time
-// 	UpdatedAt time.Time
-// }
-
 func (SwapPair) TableName() string {
 	return "erc721_swap_pairs"
 }
