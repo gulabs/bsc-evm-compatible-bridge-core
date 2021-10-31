@@ -28,8 +28,8 @@ func (e *Engine) run(fn func(), delay time.Duration) {
 	for {
 		time.Sleep(watchEventDelay)
 
-		if e.deps.Recorder.LatestBlockCached() == nil {
-			util.Logger.Infof("[Engine.run][%s]: no latest block cache found", fnName)
+		if e.deps.Recorder[e.chainID()].LatestBlockCached() == nil {
+			util.Logger.Infof("[Engine.run][%s]: no latest block cache found for chain id %s", fnName, e.chainID())
 
 			continue
 		}

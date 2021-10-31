@@ -133,15 +133,15 @@ func main() {
 		swapAgents[c.ID] = swapAgent
 		swapAgentAddresses[c.ID] = swapAgentAddr
 	}
+
+	recorders := make(map[string]recorder.IRecorder)
 	for _, c := range config.ChainConfigs {
 		chainID := util.StrToBigInt(c.ID)
 		if chainID.Cmp(big.NewInt(0)) == 0 {
 			panic(errors.New("[main]: chain id is 0"))
 		}
 
-		// TODO: implement SwapAgent instance and implement mutex lock to prevent multiple calls
-		// TODO: send tg when logging has error
-		r := recorder.NewRecorder(&recorder.Config{
+		recorders[c.ID] = recorder.NewRecorder(&recorder.Config{
 			ChainID:   chainID,
 			ChainName: c.Name,
 			HMACKey:   config.KeyManagerConfig.HMACKey,
@@ -150,6 +150,13 @@ func main() {
 			DB:        db.Session(&gorm.Session{}),
 			SwapAgent: swapAgents,
 		})
+	}
+
+	for _, c := range config.ChainConfigs {
+		chainID := util.StrToBigInt(c.ID)
+
+		// TODO: implement SwapAgent instance and implement mutex lock to prevent multiple calls
+		// TODO: send tg when logging has error
 		ob := observer.NewObserver(&observer.Config{
 			StartHeight:        c.StartHeight,
 			ConfirmNum:         c.ConfirmNum,
@@ -157,7 +164,7 @@ func main() {
 			BlockUpdateTimeout: time.Duration(config.AlertConfig.BlockUpdateTimeout) * time.Second,
 		}, &observer.Dependencies{
 			DB:       db.Session(&gorm.Session{}),
-			Recorder: r,
+			Recorder: recorders[c.ID],
 		})
 		ob.Start()
 
@@ -171,7 +178,7 @@ func main() {
 		}, &engine.Dependencies{
 			Client:    clients,
 			DB:        db.Session(&gorm.Session{}),
-			Recorder:  r,
+			Recorder:  recorders,
 			SwapAgent: swapAgents,
 		})
 		e.Start()

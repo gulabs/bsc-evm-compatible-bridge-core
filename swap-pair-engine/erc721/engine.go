@@ -8,11 +8,10 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/agent"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
-	corecommon "github.com/synycboom/bsc-evm-compatible-bridge-core/common"
+	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/evm-recorder/erc721"
 )
 
 type Recorder interface {
-	LatestBlockCached() *corecommon.Block
 }
 
 type Config struct {
@@ -27,7 +26,7 @@ type Config struct {
 type Dependencies struct {
 	Client    map[string]client.ETHClient
 	DB        *gorm.DB
-	Recorder  Recorder
+	Recorder  map[string]recorder.IRecorder
 	SwapAgent map[string]agent.SwapAgent
 }
 

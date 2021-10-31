@@ -8,7 +8,16 @@ import (
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/agent"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
 	corecommon "github.com/synycboom/bsc-evm-compatible-bridge-core/common"
+	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/block"
 )
+
+type IRecorder interface {
+	Block(height int64) (*corecommon.Block, error)
+	ChainID() string
+	Delete(tx *gorm.DB, height int64) error
+	LatestBlockCached() *corecommon.Block
+	Record(tx *gorm.DB, block *block.Log) error
+}
 
 type Config struct {
 	ChainID   *big.Int

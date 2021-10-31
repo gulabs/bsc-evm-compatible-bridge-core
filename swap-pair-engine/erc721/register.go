@@ -366,8 +366,18 @@ func (e *Engine) filterConfirmedRegisterEvents(ss []*erc721.SwapPair) (events []
 }
 
 func (e *Engine) hasBlockConfirmed(txHash, chainID string) (bool, error) {
+	if _, ok := e.deps.Recorder[chainID]; !ok {
+		return false, errors.Errorf("[Engine.hasBlockConfirmed]: chain id %s is not supported", chainID)
+	}
+
+	block := e.deps.Recorder[chainID].LatestBlockCached()
+	if block == nil {
+		util.Logger.Infof("[Engine.hasBlockConfirmed]:: no latest block cache found for chain id %s", chainID)
+
+		return false, nil
+	}
+
 	ctx := context.Background()
-	block := e.deps.Recorder.LatestBlockCached()
 	txRecipient, err := e.deps.Client[chainID].TransactionReceipt(ctx, common.HexToHash(txHash))
 	if err != nil {
 		return false, errors.Wrap(err, "[Engine.hasBlockConfirmed]: failed to get tx receipt")
@@ -392,10 +402,10 @@ func (e *Engine) generateTxHash(s *erc721.SwapPair) (string, error) {
 func (e *Engine) sendCreatePairRequest(s *erc721.SwapPair, dryRun bool) (*types.Transaction, error) {
 	dstChainID := s.DstChainID
 	dstChainIDInt := util.StrToBigInt(dstChainID)
-	if e.deps.Client[dstChainID] == nil {
+	if _, ok := e.deps.Client[dstChainID]; !ok {
 		return nil, errors.Errorf("[Engine.sendCreatePairRequest]: client for chain id %s is not supported", dstChainID)
 	}
-	if e.deps.SwapAgent[dstChainID] == nil {
+	if _, ok := e.deps.SwapAgent[dstChainID]; !ok {
 		return nil, errors.Errorf("[Engine.sendCreatePairRequest]: swap agent for chain id %s is not supported", dstChainID)
 	}
 

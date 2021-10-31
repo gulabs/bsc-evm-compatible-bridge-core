@@ -14,7 +14,7 @@ import (
 )
 
 func (e *Engine) retrieveTx(txHash, chainID string) (*types.Transaction, bool, error) {
-	if e.deps.Client[chainID] == nil {
+	if _, ok := e.deps.Client[chainID]; !ok {
 		return nil, false, errors.Errorf("[Engine.retrieveTx]: client for chain id %s is not supported", chainID)
 	}
 
@@ -32,7 +32,7 @@ func (e *Engine) retrieveTx(txHash, chainID string) (*types.Transaction, bool, e
 }
 
 func (e *Engine) retrieveTxReceipt(txHash, chainID string) (*types.Receipt, error) {
-	if e.deps.Client[chainID] == nil {
+	if _, ok := e.deps.Client[chainID]; !ok {
 		return nil, errors.Errorf("[Engine.retrieveTxReceipt]: client for chain id %s is not supported", chainID)
 	}
 
@@ -50,7 +50,7 @@ func (e *Engine) retrieveTxReceipt(txHash, chainID string) (*types.Receipt, erro
 }
 
 func (e *Engine) retrieveDstTokenAddr(height uint64, fromTokenAddr, registerTxHash, chainID string) (string, error) {
-	if e.deps.Client[chainID] == nil {
+	if _, ok := e.deps.Client[chainID]; !ok {
 		return "", errors.Errorf("[Engine.retrieveDstTokenAddr]: client for chain id %s is not supported", chainID)
 	}
 

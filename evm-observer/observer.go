@@ -5,16 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/synycboom/bsc-evm-compatible-bridge-core/common"
-	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/block"
+	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/evm-recorder/erc721"
 )
-
-type Recorder interface {
-	Block(height int64) (*common.Block, error)
-	ChainID() string
-	Record(tx *gorm.DB, block *block.Log) error
-	Delete(tx *gorm.DB, height int64) error
-}
 
 type Config struct {
 	StartHeight        int64
@@ -25,7 +17,7 @@ type Config struct {
 
 type Dependencies struct {
 	DB       *gorm.DB
-	Recorder Recorder
+	Recorder recorder.IRecorder
 }
 
 type Observer struct {
