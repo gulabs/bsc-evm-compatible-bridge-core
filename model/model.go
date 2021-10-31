@@ -10,6 +10,4 @@ import (
 func InitTables(db *gorm.DB) {
 	db.AutoMigrate(&block.Log{})
 	db.AutoMigrate(&erc721.SwapPair{})
-	db.AutoMigrate(&erc721.SwapPairCreateTx{})
-	db.AutoMigrate(&erc721.SwapPairRegisterEvent{})
 }
