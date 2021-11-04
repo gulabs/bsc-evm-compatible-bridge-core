@@ -70,6 +70,10 @@ func TxOpts(ctx context.Context, ethClient client.ETHClient, privateKey string, 
 	return txOpts, nil
 }
 
+// func CallerOpts(ctx context.Context, ethClient client.ETHClient) (*bind.CallOpts, error) {
+
+// }
+
 func BuildKeys(privateKeyStr string) (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
 	priKey, err := crypto.HexToECDSA(strings.TrimPrefix(privateKeyStr, "0x"))
 	if err != nil {

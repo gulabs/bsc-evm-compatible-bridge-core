@@ -3,12 +3,15 @@ package client
 import (
 	"context"
 	"math/big"
+	"strings"
 	"sync"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+
+	corecommon "github.com/synycboom/bsc-evm-compatible-bridge-core/common"
 )
 
 type ETHClient interface {
@@ -35,7 +38,12 @@ func (c *Client) HeaderByNumber(ctx context.Context, number *big.Int) (*types.He
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
 
-	return c.client.HeaderByNumber(ctx, number)
+	h, err := c.client.HeaderByNumber(ctx, number)
+	if err != nil && strings.Contains(err.Error(), "not found") {
+		return nil, corecommon.ErrBlockNotFound
+	}
+
+	return h, err
 }
 
 func (c *Client) PendingNonceAt(ctx context.Context, account common.Address) (uint64, error) {

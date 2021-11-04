@@ -22,6 +22,7 @@ import (
 	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/evm-recorder/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model"
 	engine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-pair-engine/erc721"
+	token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )
 
@@ -116,6 +117,7 @@ func main() {
 
 	swapAgents := make(map[string]agent.SwapAgent)
 	swapAgentAddresses := make(map[string]common.Address)
+	tokens := make(map[string]token.IToken)
 	clients := make(map[string]client.ETHClient)
 	for _, c := range config.ChainConfigs {
 		ec, err := ethclient.Dial(c.Provider)
@@ -129,6 +131,7 @@ func main() {
 			panic(errors.Wrap(err, "[main]: failed to create swap agent"))
 		}
 
+		tokens[c.ID] = token.NewToken(ec)
 		clients[c.ID] = client.NewClient(ec)
 		swapAgents[c.ID] = swapAgent
 		swapAgentAddresses[c.ID] = swapAgentAddr
@@ -149,6 +152,7 @@ func main() {
 			Client:    clients,
 			DB:        db.Session(&gorm.Session{}),
 			SwapAgent: swapAgents,
+			Token:     tokens,
 		})
 	}
 

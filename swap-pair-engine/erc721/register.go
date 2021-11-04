@@ -422,6 +422,7 @@ func (e *Engine) sendCreatePairRequest(s *erc721.SwapPair, dryRun bool) (*types.
 		common.HexToHash(s.RegisterTxHash),
 		common.HexToAddress(s.SrcTokenAddr),
 		util.StrToBigInt(s.SrcChainID),
+		s.BaseURI,
 		s.SrcTokenName,
 		s.Symbol,
 	)

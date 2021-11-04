@@ -31,7 +31,10 @@ func (ob *Observer) Update() {
 		util.Logger.Debugf("[Observer.Update]: fetch from chain id %s, height=%d", chainID, nextHeight)
 		err = ob.updateBlock(curBlockLog.Height, nextHeight, curBlockLog.BlockHash)
 		if err != nil {
-			util.Logger.Debugf("[Observer.Update]: fetch from chain id %s error, err=%s", chainID, err.Error())
+			if errors.Cause(err) != common.ErrBlockNotFound {
+				util.Logger.Errorf("[Observer.Update]: fetch from chain id %s error, err=%s", chainID, err.Error())
+			}
+
 			time.Sleep(ob.conf.FetchInterval)
 		}
 	}

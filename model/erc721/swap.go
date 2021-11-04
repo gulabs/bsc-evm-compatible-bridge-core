@@ -17,6 +17,7 @@ type SwapState string
 
 const (
 	SwapStateRequestOngoing     SwapState = "request_ongoing"
+	SwapStateRequestRejected    SwapState = "request_rejected"
 	SwapStateRequestConfirmed   SwapState = "request_confirmed"
 	SwapStateFillTxDryRunFailed SwapState = "fill_tx_dry_run_failed"
 	SwapStateFillTxCreated      SwapState = "fill_tx_created"
@@ -47,7 +48,7 @@ type Swap struct {
 	// Request Transaction Information
 	RequestTxHash     string     `gorm:"not null"`
 	RequestHeight     int64      `gorm:"not null"`
-	RequestHash       string     `gorm:"not null"`
+	RequestBlockHash  string     `gorm:"not null"`
 	RequestBlockLogID *string    `gorm:"size:26;index:foreign_key_request_block_log_id"`
 	RequestBlockLog   *block.Log `gorm:"foreignKey:RequestBlockLogID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 

@@ -9,6 +9,7 @@ import (
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
 	corecommon "github.com/synycboom/bsc-evm-compatible-bridge-core/common"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/block"
+	token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
 )
 
 type IRecorder interface {
@@ -29,6 +30,7 @@ type Dependencies struct {
 	Client    map[string]client.ETHClient
 	DB        *gorm.DB
 	SwapAgent map[string]agent.SwapAgent
+	Token     map[string]token.IToken
 }
 
 type Recorder struct {

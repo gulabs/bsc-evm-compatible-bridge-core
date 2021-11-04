@@ -30,7 +30,7 @@ var (
 
 // ERC721SwapAgentMetaData contains all meta data concerning the ERC721SwapAgent contract.
 var ERC721SwapAgentMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"swapTxHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromTokenAddr\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"mirroredTokenAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fromChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"SwapFilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"registerTxHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromTokenAddr\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"mirroredTokenAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fromChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"}],\"name\":\"SwapPairCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sponsor\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"toChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"feeAmount\",\"type\":\"uint256\"}],\"name\":\"SwapPairRegister\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"dstChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"feeAmount\",\"type\":\"uint256\"}],\"name\":\"SwapStarted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"registerTxHash\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"fromTokenAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fromChainId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"name\":\"createSwapPair\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"filledERC721Tx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"chainId\",\"type\":\"uint256\"}],\"name\":\"registerSwapPair\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"registeredERC721\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"swapPairERC721\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"swapTxHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fromChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"BackwardSwapFilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"mirroredTokenAddr\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"dstChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"feeAmount\",\"type\":\"uint256\"}],\"name\":\"BackwardSwapStarted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"swapTxHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromTokenAddr\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"mirroredTokenAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fromChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"SwapFilled\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"registerTxHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"fromTokenAddr\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"mirroredTokenAddr\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"fromChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"}],\"name\":\"SwapPairCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sponsor\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"toChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"feeAmount\",\"type\":\"uint256\"}],\"name\":\"SwapPairRegister\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"dstChainId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"feeAmount\",\"type\":\"uint256\"}],\"name\":\"SwapStarted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"registerTxHash\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"fromTokenAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fromChainId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"baseURI_\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"name\":\"createSwapPair\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"swapTxHash\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"fromTokenAddr\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fromChainId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"tokenURI\",\"type\":\"string\"}],\"name\":\"fill\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"filledERC721Tx\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"filledSwap\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC721Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"chainId\",\"type\":\"uint256\"}],\"name\":\"registerSwapPair\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"registeredToken\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddr\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"dstChainId\",\"type\":\"uint256\"}],\"name\":\"swap\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"swapMappingIncoming\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"swapMappingOutgoing\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // ERC721SwapAgentABI is the input ABI used to generate the binding from.
@@ -210,6 +210,37 @@ func (_ERC721SwapAgent *ERC721SwapAgentCallerSession) FilledERC721Tx(arg0 string
 	return _ERC721SwapAgent.Contract.FilledERC721Tx(&_ERC721SwapAgent.CallOpts, arg0, arg1)
 }
 
+// FilledSwap is a free data retrieval call binding the contract method 0xa86894ca.
+//
+// Solidity: function filledSwap(bytes32 ) view returns(bool)
+func (_ERC721SwapAgent *ERC721SwapAgentCaller) FilledSwap(opts *bind.CallOpts, arg0 [32]byte) (bool, error) {
+	var out []interface{}
+	err := _ERC721SwapAgent.contract.Call(opts, &out, "filledSwap", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// FilledSwap is a free data retrieval call binding the contract method 0xa86894ca.
+//
+// Solidity: function filledSwap(bytes32 ) view returns(bool)
+func (_ERC721SwapAgent *ERC721SwapAgentSession) FilledSwap(arg0 [32]byte) (bool, error) {
+	return _ERC721SwapAgent.Contract.FilledSwap(&_ERC721SwapAgent.CallOpts, arg0)
+}
+
+// FilledSwap is a free data retrieval call binding the contract method 0xa86894ca.
+//
+// Solidity: function filledSwap(bytes32 ) view returns(bool)
+func (_ERC721SwapAgent *ERC721SwapAgentCallerSession) FilledSwap(arg0 [32]byte) (bool, error) {
+	return _ERC721SwapAgent.Contract.FilledSwap(&_ERC721SwapAgent.CallOpts, arg0)
+}
+
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
 // Solidity: function owner() view returns(address)
@@ -241,12 +272,12 @@ func (_ERC721SwapAgent *ERC721SwapAgentCallerSession) Owner() (common.Address, e
 	return _ERC721SwapAgent.Contract.Owner(&_ERC721SwapAgent.CallOpts)
 }
 
-// RegisteredERC721 is a free data retrieval call binding the contract method 0xff6d5851.
+// RegisteredToken is a free data retrieval call binding the contract method 0x0b4f43c1.
 //
-// Solidity: function registeredERC721(uint256 , address ) view returns(bool)
-func (_ERC721SwapAgent *ERC721SwapAgentCaller) RegisteredERC721(opts *bind.CallOpts, arg0 *big.Int, arg1 common.Address) (bool, error) {
+// Solidity: function registeredToken(uint256 , address ) view returns(bool)
+func (_ERC721SwapAgent *ERC721SwapAgentCaller) RegisteredToken(opts *bind.CallOpts, arg0 *big.Int, arg1 common.Address) (bool, error) {
 	var out []interface{}
-	err := _ERC721SwapAgent.contract.Call(opts, &out, "registeredERC721", arg0, arg1)
+	err := _ERC721SwapAgent.contract.Call(opts, &out, "registeredToken", arg0, arg1)
 
 	if err != nil {
 		return *new(bool), err
@@ -258,26 +289,26 @@ func (_ERC721SwapAgent *ERC721SwapAgentCaller) RegisteredERC721(opts *bind.CallO
 
 }
 
-// RegisteredERC721 is a free data retrieval call binding the contract method 0xff6d5851.
+// RegisteredToken is a free data retrieval call binding the contract method 0x0b4f43c1.
 //
-// Solidity: function registeredERC721(uint256 , address ) view returns(bool)
-func (_ERC721SwapAgent *ERC721SwapAgentSession) RegisteredERC721(arg0 *big.Int, arg1 common.Address) (bool, error) {
-	return _ERC721SwapAgent.Contract.RegisteredERC721(&_ERC721SwapAgent.CallOpts, arg0, arg1)
+// Solidity: function registeredToken(uint256 , address ) view returns(bool)
+func (_ERC721SwapAgent *ERC721SwapAgentSession) RegisteredToken(arg0 *big.Int, arg1 common.Address) (bool, error) {
+	return _ERC721SwapAgent.Contract.RegisteredToken(&_ERC721SwapAgent.CallOpts, arg0, arg1)
 }
 
-// RegisteredERC721 is a free data retrieval call binding the contract method 0xff6d5851.
+// RegisteredToken is a free data retrieval call binding the contract method 0x0b4f43c1.
 //
-// Solidity: function registeredERC721(uint256 , address ) view returns(bool)
-func (_ERC721SwapAgent *ERC721SwapAgentCallerSession) RegisteredERC721(arg0 *big.Int, arg1 common.Address) (bool, error) {
-	return _ERC721SwapAgent.Contract.RegisteredERC721(&_ERC721SwapAgent.CallOpts, arg0, arg1)
+// Solidity: function registeredToken(uint256 , address ) view returns(bool)
+func (_ERC721SwapAgent *ERC721SwapAgentCallerSession) RegisteredToken(arg0 *big.Int, arg1 common.Address) (bool, error) {
+	return _ERC721SwapAgent.Contract.RegisteredToken(&_ERC721SwapAgent.CallOpts, arg0, arg1)
 }
 
-// SwapPairERC721 is a free data retrieval call binding the contract method 0xa540e5d5.
+// SwapMappingIncoming is a free data retrieval call binding the contract method 0xec686704.
 //
-// Solidity: function swapPairERC721(uint256 , address ) view returns(address)
-func (_ERC721SwapAgent *ERC721SwapAgentCaller) SwapPairERC721(opts *bind.CallOpts, arg0 *big.Int, arg1 common.Address) (common.Address, error) {
+// Solidity: function swapMappingIncoming(uint256 , address ) view returns(address)
+func (_ERC721SwapAgent *ERC721SwapAgentCaller) SwapMappingIncoming(opts *bind.CallOpts, arg0 *big.Int, arg1 common.Address) (common.Address, error) {
 	var out []interface{}
-	err := _ERC721SwapAgent.contract.Call(opts, &out, "swapPairERC721", arg0, arg1)
+	err := _ERC721SwapAgent.contract.Call(opts, &out, "swapMappingIncoming", arg0, arg1)
 
 	if err != nil {
 		return *new(common.Address), err
@@ -289,39 +320,91 @@ func (_ERC721SwapAgent *ERC721SwapAgentCaller) SwapPairERC721(opts *bind.CallOpt
 
 }
 
-// SwapPairERC721 is a free data retrieval call binding the contract method 0xa540e5d5.
+// SwapMappingIncoming is a free data retrieval call binding the contract method 0xec686704.
 //
-// Solidity: function swapPairERC721(uint256 , address ) view returns(address)
-func (_ERC721SwapAgent *ERC721SwapAgentSession) SwapPairERC721(arg0 *big.Int, arg1 common.Address) (common.Address, error) {
-	return _ERC721SwapAgent.Contract.SwapPairERC721(&_ERC721SwapAgent.CallOpts, arg0, arg1)
+// Solidity: function swapMappingIncoming(uint256 , address ) view returns(address)
+func (_ERC721SwapAgent *ERC721SwapAgentSession) SwapMappingIncoming(arg0 *big.Int, arg1 common.Address) (common.Address, error) {
+	return _ERC721SwapAgent.Contract.SwapMappingIncoming(&_ERC721SwapAgent.CallOpts, arg0, arg1)
 }
 
-// SwapPairERC721 is a free data retrieval call binding the contract method 0xa540e5d5.
+// SwapMappingIncoming is a free data retrieval call binding the contract method 0xec686704.
 //
-// Solidity: function swapPairERC721(uint256 , address ) view returns(address)
-func (_ERC721SwapAgent *ERC721SwapAgentCallerSession) SwapPairERC721(arg0 *big.Int, arg1 common.Address) (common.Address, error) {
-	return _ERC721SwapAgent.Contract.SwapPairERC721(&_ERC721SwapAgent.CallOpts, arg0, arg1)
+// Solidity: function swapMappingIncoming(uint256 , address ) view returns(address)
+func (_ERC721SwapAgent *ERC721SwapAgentCallerSession) SwapMappingIncoming(arg0 *big.Int, arg1 common.Address) (common.Address, error) {
+	return _ERC721SwapAgent.Contract.SwapMappingIncoming(&_ERC721SwapAgent.CallOpts, arg0, arg1)
 }
 
-// CreateSwapPair is a paid mutator transaction binding the contract method 0x8b9a6f27.
+// SwapMappingOutgoing is a free data retrieval call binding the contract method 0x0d43d992.
 //
-// Solidity: function createSwapPair(bytes32 registerTxHash, address fromTokenAddr, uint256 fromChainId, string tokenName, string tokenSymbol) returns()
-func (_ERC721SwapAgent *ERC721SwapAgentTransactor) CreateSwapPair(opts *bind.TransactOpts, registerTxHash [32]byte, fromTokenAddr common.Address, fromChainId *big.Int, tokenName string, tokenSymbol string) (*types.Transaction, error) {
-	return _ERC721SwapAgent.contract.Transact(opts, "createSwapPair", registerTxHash, fromTokenAddr, fromChainId, tokenName, tokenSymbol)
+// Solidity: function swapMappingOutgoing(uint256 , address ) view returns(address)
+func (_ERC721SwapAgent *ERC721SwapAgentCaller) SwapMappingOutgoing(opts *bind.CallOpts, arg0 *big.Int, arg1 common.Address) (common.Address, error) {
+	var out []interface{}
+	err := _ERC721SwapAgent.contract.Call(opts, &out, "swapMappingOutgoing", arg0, arg1)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
-// CreateSwapPair is a paid mutator transaction binding the contract method 0x8b9a6f27.
+// SwapMappingOutgoing is a free data retrieval call binding the contract method 0x0d43d992.
 //
-// Solidity: function createSwapPair(bytes32 registerTxHash, address fromTokenAddr, uint256 fromChainId, string tokenName, string tokenSymbol) returns()
-func (_ERC721SwapAgent *ERC721SwapAgentSession) CreateSwapPair(registerTxHash [32]byte, fromTokenAddr common.Address, fromChainId *big.Int, tokenName string, tokenSymbol string) (*types.Transaction, error) {
-	return _ERC721SwapAgent.Contract.CreateSwapPair(&_ERC721SwapAgent.TransactOpts, registerTxHash, fromTokenAddr, fromChainId, tokenName, tokenSymbol)
+// Solidity: function swapMappingOutgoing(uint256 , address ) view returns(address)
+func (_ERC721SwapAgent *ERC721SwapAgentSession) SwapMappingOutgoing(arg0 *big.Int, arg1 common.Address) (common.Address, error) {
+	return _ERC721SwapAgent.Contract.SwapMappingOutgoing(&_ERC721SwapAgent.CallOpts, arg0, arg1)
 }
 
-// CreateSwapPair is a paid mutator transaction binding the contract method 0x8b9a6f27.
+// SwapMappingOutgoing is a free data retrieval call binding the contract method 0x0d43d992.
 //
-// Solidity: function createSwapPair(bytes32 registerTxHash, address fromTokenAddr, uint256 fromChainId, string tokenName, string tokenSymbol) returns()
-func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) CreateSwapPair(registerTxHash [32]byte, fromTokenAddr common.Address, fromChainId *big.Int, tokenName string, tokenSymbol string) (*types.Transaction, error) {
-	return _ERC721SwapAgent.Contract.CreateSwapPair(&_ERC721SwapAgent.TransactOpts, registerTxHash, fromTokenAddr, fromChainId, tokenName, tokenSymbol)
+// Solidity: function swapMappingOutgoing(uint256 , address ) view returns(address)
+func (_ERC721SwapAgent *ERC721SwapAgentCallerSession) SwapMappingOutgoing(arg0 *big.Int, arg1 common.Address) (common.Address, error) {
+	return _ERC721SwapAgent.Contract.SwapMappingOutgoing(&_ERC721SwapAgent.CallOpts, arg0, arg1)
+}
+
+// CreateSwapPair is a paid mutator transaction binding the contract method 0x9df52edd.
+//
+// Solidity: function createSwapPair(bytes32 registerTxHash, address fromTokenAddr, uint256 fromChainId, string baseURI_, string tokenName, string tokenSymbol) returns()
+func (_ERC721SwapAgent *ERC721SwapAgentTransactor) CreateSwapPair(opts *bind.TransactOpts, registerTxHash [32]byte, fromTokenAddr common.Address, fromChainId *big.Int, baseURI_ string, tokenName string, tokenSymbol string) (*types.Transaction, error) {
+	return _ERC721SwapAgent.contract.Transact(opts, "createSwapPair", registerTxHash, fromTokenAddr, fromChainId, baseURI_, tokenName, tokenSymbol)
+}
+
+// CreateSwapPair is a paid mutator transaction binding the contract method 0x9df52edd.
+//
+// Solidity: function createSwapPair(bytes32 registerTxHash, address fromTokenAddr, uint256 fromChainId, string baseURI_, string tokenName, string tokenSymbol) returns()
+func (_ERC721SwapAgent *ERC721SwapAgentSession) CreateSwapPair(registerTxHash [32]byte, fromTokenAddr common.Address, fromChainId *big.Int, baseURI_ string, tokenName string, tokenSymbol string) (*types.Transaction, error) {
+	return _ERC721SwapAgent.Contract.CreateSwapPair(&_ERC721SwapAgent.TransactOpts, registerTxHash, fromTokenAddr, fromChainId, baseURI_, tokenName, tokenSymbol)
+}
+
+// CreateSwapPair is a paid mutator transaction binding the contract method 0x9df52edd.
+//
+// Solidity: function createSwapPair(bytes32 registerTxHash, address fromTokenAddr, uint256 fromChainId, string baseURI_, string tokenName, string tokenSymbol) returns()
+func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) CreateSwapPair(registerTxHash [32]byte, fromTokenAddr common.Address, fromChainId *big.Int, baseURI_ string, tokenName string, tokenSymbol string) (*types.Transaction, error) {
+	return _ERC721SwapAgent.Contract.CreateSwapPair(&_ERC721SwapAgent.TransactOpts, registerTxHash, fromTokenAddr, fromChainId, baseURI_, tokenName, tokenSymbol)
+}
+
+// Fill is a paid mutator transaction binding the contract method 0x79e7db59.
+//
+// Solidity: function fill(bytes32 swapTxHash, address fromTokenAddr, address recipient, uint256 fromChainId, uint256 tokenId, string tokenURI) returns()
+func (_ERC721SwapAgent *ERC721SwapAgentTransactor) Fill(opts *bind.TransactOpts, swapTxHash [32]byte, fromTokenAddr common.Address, recipient common.Address, fromChainId *big.Int, tokenId *big.Int, tokenURI string) (*types.Transaction, error) {
+	return _ERC721SwapAgent.contract.Transact(opts, "fill", swapTxHash, fromTokenAddr, recipient, fromChainId, tokenId, tokenURI)
+}
+
+// Fill is a paid mutator transaction binding the contract method 0x79e7db59.
+//
+// Solidity: function fill(bytes32 swapTxHash, address fromTokenAddr, address recipient, uint256 fromChainId, uint256 tokenId, string tokenURI) returns()
+func (_ERC721SwapAgent *ERC721SwapAgentSession) Fill(swapTxHash [32]byte, fromTokenAddr common.Address, recipient common.Address, fromChainId *big.Int, tokenId *big.Int, tokenURI string) (*types.Transaction, error) {
+	return _ERC721SwapAgent.Contract.Fill(&_ERC721SwapAgent.TransactOpts, swapTxHash, fromTokenAddr, recipient, fromChainId, tokenId, tokenURI)
+}
+
+// Fill is a paid mutator transaction binding the contract method 0x79e7db59.
+//
+// Solidity: function fill(bytes32 swapTxHash, address fromTokenAddr, address recipient, uint256 fromChainId, uint256 tokenId, string tokenURI) returns()
+func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) Fill(swapTxHash [32]byte, fromTokenAddr common.Address, recipient common.Address, fromChainId *big.Int, tokenId *big.Int, tokenURI string) (*types.Transaction, error) {
+	return _ERC721SwapAgent.Contract.Fill(&_ERC721SwapAgent.TransactOpts, swapTxHash, fromTokenAddr, recipient, fromChainId, tokenId, tokenURI)
 }
 
 // Initialize is a paid mutator transaction binding the contract method 0x8129fc1c.
@@ -345,23 +428,44 @@ func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) Initialize() (*types.T
 	return _ERC721SwapAgent.Contract.Initialize(&_ERC721SwapAgent.TransactOpts)
 }
 
+// OnERC721Received is a paid mutator transaction binding the contract method 0x150b7a02.
+//
+// Solidity: function onERC721Received(address , address , uint256 , bytes ) returns(bytes4)
+func (_ERC721SwapAgent *ERC721SwapAgentTransactor) OnERC721Received(opts *bind.TransactOpts, arg0 common.Address, arg1 common.Address, arg2 *big.Int, arg3 []byte) (*types.Transaction, error) {
+	return _ERC721SwapAgent.contract.Transact(opts, "onERC721Received", arg0, arg1, arg2, arg3)
+}
+
+// OnERC721Received is a paid mutator transaction binding the contract method 0x150b7a02.
+//
+// Solidity: function onERC721Received(address , address , uint256 , bytes ) returns(bytes4)
+func (_ERC721SwapAgent *ERC721SwapAgentSession) OnERC721Received(arg0 common.Address, arg1 common.Address, arg2 *big.Int, arg3 []byte) (*types.Transaction, error) {
+	return _ERC721SwapAgent.Contract.OnERC721Received(&_ERC721SwapAgent.TransactOpts, arg0, arg1, arg2, arg3)
+}
+
+// OnERC721Received is a paid mutator transaction binding the contract method 0x150b7a02.
+//
+// Solidity: function onERC721Received(address , address , uint256 , bytes ) returns(bytes4)
+func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) OnERC721Received(arg0 common.Address, arg1 common.Address, arg2 *big.Int, arg3 []byte) (*types.Transaction, error) {
+	return _ERC721SwapAgent.Contract.OnERC721Received(&_ERC721SwapAgent.TransactOpts, arg0, arg1, arg2, arg3)
+}
+
 // RegisterSwapPair is a paid mutator transaction binding the contract method 0x45b1ab1b.
 //
-// Solidity: function registerSwapPair(address tokenAddr, uint256 chainId) returns()
+// Solidity: function registerSwapPair(address tokenAddr, uint256 chainId) payable returns()
 func (_ERC721SwapAgent *ERC721SwapAgentTransactor) RegisterSwapPair(opts *bind.TransactOpts, tokenAddr common.Address, chainId *big.Int) (*types.Transaction, error) {
 	return _ERC721SwapAgent.contract.Transact(opts, "registerSwapPair", tokenAddr, chainId)
 }
 
 // RegisterSwapPair is a paid mutator transaction binding the contract method 0x45b1ab1b.
 //
-// Solidity: function registerSwapPair(address tokenAddr, uint256 chainId) returns()
+// Solidity: function registerSwapPair(address tokenAddr, uint256 chainId) payable returns()
 func (_ERC721SwapAgent *ERC721SwapAgentSession) RegisterSwapPair(tokenAddr common.Address, chainId *big.Int) (*types.Transaction, error) {
 	return _ERC721SwapAgent.Contract.RegisterSwapPair(&_ERC721SwapAgent.TransactOpts, tokenAddr, chainId)
 }
 
 // RegisterSwapPair is a paid mutator transaction binding the contract method 0x45b1ab1b.
 //
-// Solidity: function registerSwapPair(address tokenAddr, uint256 chainId) returns()
+// Solidity: function registerSwapPair(address tokenAddr, uint256 chainId) payable returns()
 func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) RegisterSwapPair(tokenAddr common.Address, chainId *big.Int) (*types.Transaction, error) {
 	return _ERC721SwapAgent.Contract.RegisterSwapPair(&_ERC721SwapAgent.TransactOpts, tokenAddr, chainId)
 }
@@ -387,6 +491,27 @@ func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) RenounceOwnership() (*
 	return _ERC721SwapAgent.Contract.RenounceOwnership(&_ERC721SwapAgent.TransactOpts)
 }
 
+// Swap is a paid mutator transaction binding the contract method 0xfe029156.
+//
+// Solidity: function swap(address tokenAddr, address recipient, uint256 tokenId, uint256 dstChainId) payable returns()
+func (_ERC721SwapAgent *ERC721SwapAgentTransactor) Swap(opts *bind.TransactOpts, tokenAddr common.Address, recipient common.Address, tokenId *big.Int, dstChainId *big.Int) (*types.Transaction, error) {
+	return _ERC721SwapAgent.contract.Transact(opts, "swap", tokenAddr, recipient, tokenId, dstChainId)
+}
+
+// Swap is a paid mutator transaction binding the contract method 0xfe029156.
+//
+// Solidity: function swap(address tokenAddr, address recipient, uint256 tokenId, uint256 dstChainId) payable returns()
+func (_ERC721SwapAgent *ERC721SwapAgentSession) Swap(tokenAddr common.Address, recipient common.Address, tokenId *big.Int, dstChainId *big.Int) (*types.Transaction, error) {
+	return _ERC721SwapAgent.Contract.Swap(&_ERC721SwapAgent.TransactOpts, tokenAddr, recipient, tokenId, dstChainId)
+}
+
+// Swap is a paid mutator transaction binding the contract method 0xfe029156.
+//
+// Solidity: function swap(address tokenAddr, address recipient, uint256 tokenId, uint256 dstChainId) payable returns()
+func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) Swap(tokenAddr common.Address, recipient common.Address, tokenId *big.Int, dstChainId *big.Int) (*types.Transaction, error) {
+	return _ERC721SwapAgent.Contract.Swap(&_ERC721SwapAgent.TransactOpts, tokenAddr, recipient, tokenId, dstChainId)
+}
+
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
 //
 // Solidity: function transferOwnership(address newOwner) returns()
@@ -406,6 +531,335 @@ func (_ERC721SwapAgent *ERC721SwapAgentSession) TransferOwnership(newOwner commo
 // Solidity: function transferOwnership(address newOwner) returns()
 func (_ERC721SwapAgent *ERC721SwapAgentTransactorSession) TransferOwnership(newOwner common.Address) (*types.Transaction, error) {
 	return _ERC721SwapAgent.Contract.TransferOwnership(&_ERC721SwapAgent.TransactOpts, newOwner)
+}
+
+// ERC721SwapAgentBackwardSwapFilledIterator is returned from FilterBackwardSwapFilled and is used to iterate over the raw logs and unpacked data for BackwardSwapFilled events raised by the ERC721SwapAgent contract.
+type ERC721SwapAgentBackwardSwapFilledIterator struct {
+	Event *ERC721SwapAgentBackwardSwapFilled // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ERC721SwapAgentBackwardSwapFilledIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ERC721SwapAgentBackwardSwapFilled)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ERC721SwapAgentBackwardSwapFilled)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ERC721SwapAgentBackwardSwapFilledIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ERC721SwapAgentBackwardSwapFilledIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ERC721SwapAgentBackwardSwapFilled represents a BackwardSwapFilled event raised by the ERC721SwapAgent contract.
+type ERC721SwapAgentBackwardSwapFilled struct {
+	SwapTxHash  [32]byte
+	TokenAddr   common.Address
+	Recipient   common.Address
+	FromChainId *big.Int
+	TokenId     *big.Int
+	Raw         types.Log // Blockchain specific contextual infos
+}
+
+// FilterBackwardSwapFilled is a free log retrieval operation binding the contract event 0x3465ebb4fdfd4cdb5a9c6020ffa12bd1a621dca4e158f14497eff75a33fda45f.
+//
+// Solidity: event BackwardSwapFilled(bytes32 indexed swapTxHash, address indexed tokenAddr, address indexed recipient, uint256 fromChainId, uint256 tokenId)
+func (_ERC721SwapAgent *ERC721SwapAgentFilterer) FilterBackwardSwapFilled(opts *bind.FilterOpts, swapTxHash [][32]byte, tokenAddr []common.Address, recipient []common.Address) (*ERC721SwapAgentBackwardSwapFilledIterator, error) {
+
+	var swapTxHashRule []interface{}
+	for _, swapTxHashItem := range swapTxHash {
+		swapTxHashRule = append(swapTxHashRule, swapTxHashItem)
+	}
+	var tokenAddrRule []interface{}
+	for _, tokenAddrItem := range tokenAddr {
+		tokenAddrRule = append(tokenAddrRule, tokenAddrItem)
+	}
+	var recipientRule []interface{}
+	for _, recipientItem := range recipient {
+		recipientRule = append(recipientRule, recipientItem)
+	}
+
+	logs, sub, err := _ERC721SwapAgent.contract.FilterLogs(opts, "BackwardSwapFilled", swapTxHashRule, tokenAddrRule, recipientRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ERC721SwapAgentBackwardSwapFilledIterator{contract: _ERC721SwapAgent.contract, event: "BackwardSwapFilled", logs: logs, sub: sub}, nil
+}
+
+// WatchBackwardSwapFilled is a free log subscription operation binding the contract event 0x3465ebb4fdfd4cdb5a9c6020ffa12bd1a621dca4e158f14497eff75a33fda45f.
+//
+// Solidity: event BackwardSwapFilled(bytes32 indexed swapTxHash, address indexed tokenAddr, address indexed recipient, uint256 fromChainId, uint256 tokenId)
+func (_ERC721SwapAgent *ERC721SwapAgentFilterer) WatchBackwardSwapFilled(opts *bind.WatchOpts, sink chan<- *ERC721SwapAgentBackwardSwapFilled, swapTxHash [][32]byte, tokenAddr []common.Address, recipient []common.Address) (event.Subscription, error) {
+
+	var swapTxHashRule []interface{}
+	for _, swapTxHashItem := range swapTxHash {
+		swapTxHashRule = append(swapTxHashRule, swapTxHashItem)
+	}
+	var tokenAddrRule []interface{}
+	for _, tokenAddrItem := range tokenAddr {
+		tokenAddrRule = append(tokenAddrRule, tokenAddrItem)
+	}
+	var recipientRule []interface{}
+	for _, recipientItem := range recipient {
+		recipientRule = append(recipientRule, recipientItem)
+	}
+
+	logs, sub, err := _ERC721SwapAgent.contract.WatchLogs(opts, "BackwardSwapFilled", swapTxHashRule, tokenAddrRule, recipientRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ERC721SwapAgentBackwardSwapFilled)
+				if err := _ERC721SwapAgent.contract.UnpackLog(event, "BackwardSwapFilled", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseBackwardSwapFilled is a log parse operation binding the contract event 0x3465ebb4fdfd4cdb5a9c6020ffa12bd1a621dca4e158f14497eff75a33fda45f.
+//
+// Solidity: event BackwardSwapFilled(bytes32 indexed swapTxHash, address indexed tokenAddr, address indexed recipient, uint256 fromChainId, uint256 tokenId)
+func (_ERC721SwapAgent *ERC721SwapAgentFilterer) ParseBackwardSwapFilled(log types.Log) (*ERC721SwapAgentBackwardSwapFilled, error) {
+	event := new(ERC721SwapAgentBackwardSwapFilled)
+	if err := _ERC721SwapAgent.contract.UnpackLog(event, "BackwardSwapFilled", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// ERC721SwapAgentBackwardSwapStartedIterator is returned from FilterBackwardSwapStarted and is used to iterate over the raw logs and unpacked data for BackwardSwapStarted events raised by the ERC721SwapAgent contract.
+type ERC721SwapAgentBackwardSwapStartedIterator struct {
+	Event *ERC721SwapAgentBackwardSwapStarted // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *ERC721SwapAgentBackwardSwapStartedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(ERC721SwapAgentBackwardSwapStarted)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(ERC721SwapAgentBackwardSwapStarted)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *ERC721SwapAgentBackwardSwapStartedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *ERC721SwapAgentBackwardSwapStartedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// ERC721SwapAgentBackwardSwapStarted represents a BackwardSwapStarted event raised by the ERC721SwapAgent contract.
+type ERC721SwapAgentBackwardSwapStarted struct {
+	MirroredTokenAddr common.Address
+	Sender            common.Address
+	Recipient         common.Address
+	DstChainId        *big.Int
+	TokenId           *big.Int
+	FeeAmount         *big.Int
+	Raw               types.Log // Blockchain specific contextual infos
+}
+
+// FilterBackwardSwapStarted is a free log retrieval operation binding the contract event 0x3fb82ea212f026f013c4a9982b7422161274b487e5f7f3499ae555390a054662.
+//
+// Solidity: event BackwardSwapStarted(address indexed mirroredTokenAddr, address indexed sender, address indexed recipient, uint256 dstChainId, uint256 tokenId, uint256 feeAmount)
+func (_ERC721SwapAgent *ERC721SwapAgentFilterer) FilterBackwardSwapStarted(opts *bind.FilterOpts, mirroredTokenAddr []common.Address, sender []common.Address, recipient []common.Address) (*ERC721SwapAgentBackwardSwapStartedIterator, error) {
+
+	var mirroredTokenAddrRule []interface{}
+	for _, mirroredTokenAddrItem := range mirroredTokenAddr {
+		mirroredTokenAddrRule = append(mirroredTokenAddrRule, mirroredTokenAddrItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+	var recipientRule []interface{}
+	for _, recipientItem := range recipient {
+		recipientRule = append(recipientRule, recipientItem)
+	}
+
+	logs, sub, err := _ERC721SwapAgent.contract.FilterLogs(opts, "BackwardSwapStarted", mirroredTokenAddrRule, senderRule, recipientRule)
+	if err != nil {
+		return nil, err
+	}
+	return &ERC721SwapAgentBackwardSwapStartedIterator{contract: _ERC721SwapAgent.contract, event: "BackwardSwapStarted", logs: logs, sub: sub}, nil
+}
+
+// WatchBackwardSwapStarted is a free log subscription operation binding the contract event 0x3fb82ea212f026f013c4a9982b7422161274b487e5f7f3499ae555390a054662.
+//
+// Solidity: event BackwardSwapStarted(address indexed mirroredTokenAddr, address indexed sender, address indexed recipient, uint256 dstChainId, uint256 tokenId, uint256 feeAmount)
+func (_ERC721SwapAgent *ERC721SwapAgentFilterer) WatchBackwardSwapStarted(opts *bind.WatchOpts, sink chan<- *ERC721SwapAgentBackwardSwapStarted, mirroredTokenAddr []common.Address, sender []common.Address, recipient []common.Address) (event.Subscription, error) {
+
+	var mirroredTokenAddrRule []interface{}
+	for _, mirroredTokenAddrItem := range mirroredTokenAddr {
+		mirroredTokenAddrRule = append(mirroredTokenAddrRule, mirroredTokenAddrItem)
+	}
+	var senderRule []interface{}
+	for _, senderItem := range sender {
+		senderRule = append(senderRule, senderItem)
+	}
+	var recipientRule []interface{}
+	for _, recipientItem := range recipient {
+		recipientRule = append(recipientRule, recipientItem)
+	}
+
+	logs, sub, err := _ERC721SwapAgent.contract.WatchLogs(opts, "BackwardSwapStarted", mirroredTokenAddrRule, senderRule, recipientRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(ERC721SwapAgentBackwardSwapStarted)
+				if err := _ERC721SwapAgent.contract.UnpackLog(event, "BackwardSwapStarted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseBackwardSwapStarted is a log parse operation binding the contract event 0x3fb82ea212f026f013c4a9982b7422161274b487e5f7f3499ae555390a054662.
+//
+// Solidity: event BackwardSwapStarted(address indexed mirroredTokenAddr, address indexed sender, address indexed recipient, uint256 dstChainId, uint256 tokenId, uint256 feeAmount)
+func (_ERC721SwapAgent *ERC721SwapAgentFilterer) ParseBackwardSwapStarted(log types.Log) (*ERC721SwapAgentBackwardSwapStarted, error) {
+	event := new(ERC721SwapAgentBackwardSwapStarted)
+	if err := _ERC721SwapAgent.contract.UnpackLog(event, "BackwardSwapStarted", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // ERC721SwapAgentOwnershipTransferredIterator is returned from FilterOwnershipTransferred and is used to iterate over the raw logs and unpacked data for OwnershipTransferred events raised by the ERC721SwapAgent contract.

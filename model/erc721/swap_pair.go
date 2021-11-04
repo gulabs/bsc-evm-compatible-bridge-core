@@ -40,6 +40,7 @@ type SwapPair struct {
 	Available    bool   `gorm:"not null"`
 	Signature    string `gorm:"not null"`
 	Symbol       string `gorm:"not null"`
+	BaseURI      string
 
 	// Pair State
 	State SwapPairState `gorm:"not null"`

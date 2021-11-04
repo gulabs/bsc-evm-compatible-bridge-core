@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"math"
-	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -12,18 +11,17 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	"github.com/synycboom/bsc-evm-compatible-bridge-core/common"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/block"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )
 
 var (
-	registerFilterLogsTimeout = time.Duration(20) * time.Second
+	swapFilterLogsTimeout = time.Duration(20) * time.Second
 )
 
-func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
-	ctx, cancel := context.WithTimeout(context.Background(), registerFilterLogsTimeout)
+func (r *Recorder) recordSwapTx(tx *gorm.DB, b *block.Log) error {
+	ctx, cancel := context.WithTimeout(context.Background(), swapFilterLogsTimeout)
 	defer cancel()
 
 	height := uint64(b.Height)
@@ -55,7 +53,6 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 			Available:    false,
 			Signature:    "",
 			Symbol:       iter.Event.TokenSymbol,
-			BaseURI:      "",
 
 			State: erc721.SwapPairStateRegistrationOngoing,
 
@@ -72,16 +69,6 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 			CreateBlockLogID: nil,
 		}
 
-		// TODO: handle error in case the contract has no baseURI method
-		baseURI, err := r.retrieveBaseURI(s.SrcTokenAddr)
-		if err != nil {
-			return errors.Wrap(err, "[Recorder.recordRegisterTx]: failed to get baseURI")
-		}
-		if baseURI == "" {
-			util.Logger.Infof("[Recorder.recordRegisterTx]: chain id %s, token %s has no baseURI", s.SrcChainID, s.SrcTokenAddr)
-		}
-
-		s.BaseURI = baseURI
 		ss = append(ss, s)
 	}
 
@@ -101,43 +88,4 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 	}
 
 	return nil
-}
-
-// func (r *Recorder) retrieveTokenURI(tokenAddr, tokenID string) (string, error) {
-// 	token, ok := r.deps.Token[r.ChainID()]
-// 	if !ok {
-// 		return "", errors.Errorf("[Recorder.retrieveTokenURI]: unsupported chain id %s", r.ChainID())
-// 	}
-
-// 	opts := &bind.CallOpts{
-// 		Pending: true,
-// 	}
-// 	tID := util.StrToBigInt(tokenID)
-// 	uri, err := token.TokenURI(opts, tokenAddr, tID)
-// 	if err != nil {
-// 		return "", errors.Wrap(err, "[Recorder.retrieveTokenURI]: failed to retrieve token URI")
-// 	}
-
-// 	return uri, nil
-// }
-
-func (r *Recorder) retrieveBaseURI(tokenAddr string) (string, error) {
-	token, ok := r.deps.Token[r.ChainID()]
-	if !ok {
-		return "", errors.Errorf("[Recorder.retrieveBaseURI]: unsupported chain id %s", r.ChainID())
-	}
-
-	opts := &bind.CallOpts{
-		Pending: true,
-	}
-	uri, err := token.BaseURI(opts, tokenAddr)
-	if err != nil {
-		if strings.Contains(err.Error(), common.ErrFunctionNotFound.Error()) {
-			return "", nil
-		}
-
-		return "", errors.Wrap(err, "[Recorder.retrieveBaseURI]: failed to retrieve base URI")
-	}
-
-	return uri, nil
 }

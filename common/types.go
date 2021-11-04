@@ -1,6 +1,9 @@
 package common
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 const (
 	ObserverMaxBlockNumber = 10000
@@ -14,10 +17,10 @@ const (
 	AWSPrivateKey   = "aws_private_key"
 )
 
-type SwapStatus string
-type SwapPairStatus string
-type RetrySwapStatus string
-type SwapDirection string
+var (
+	ErrBlockNotFound    = errors.New("block is not found")
+	ErrFunctionNotFound = errors.New("attempting to unmarshall an empty string while arguments are expected")
+)
 
 type Block struct {
 	Height          int64
