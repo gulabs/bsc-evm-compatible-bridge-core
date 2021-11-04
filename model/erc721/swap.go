@@ -40,6 +40,7 @@ type Swap struct {
 	Sender       string `gorm:"not null"`
 	Recipient    string `gorm:"not null"`
 	TokenID      string `gorm:"not null"`
+	TokenURI     string `gorm:"not null"`
 	Signature    string `gorm:"not null"`
 
 	// Swap State
@@ -51,6 +52,7 @@ type Swap struct {
 	RequestBlockHash  string     `gorm:"not null"`
 	RequestBlockLogID *string    `gorm:"size:26;index:foreign_key_request_block_log_id"`
 	RequestBlockLog   *block.Log `gorm:"foreignKey:RequestBlockLogID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	RequestTrackRetry int64
 
 	// Fill Transaction Information
 	FillConsumedFeeAmount string
