@@ -38,4 +38,14 @@ type SwapAgent interface {
 		sender []common.Address,
 		recipient []common.Address,
 	) (*contractabi.ERC721SwapAgentSwapStartedIterator, error)
+
+	Fill(
+		opts *bind.TransactOpts,
+		swapTxHash [32]byte,
+		fromTokenAddr common.Address,
+		recipient common.Address,
+		fromChainId *big.Int,
+		tokenId *big.Int,
+		tokenURI string,
+	) (*types.Transaction, error)
 }

@@ -18,10 +18,11 @@ import (
 	contractabi "github.com/synycboom/bsc-evm-compatible-bridge-core/abi"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/agent"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
-	engine "github.com/synycboom/bsc-evm-compatible-bridge-core/engine/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model"
 	observer "github.com/synycboom/bsc-evm-compatible-bridge-core/observer"
 	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/recorder/erc721"
+	sengine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-engine/erc721"
+	spengine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-pair-engine/erc721"
 	token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )
@@ -172,20 +173,36 @@ func main() {
 		})
 		ob.Start()
 
-		e := engine.NewEngine(&engine.Config{
+		e := spengine.NewEngine(&spengine.Config{
 			ChainID:            chainID,
 			ConfirmNum:         c.ConfirmNum,
 			ExplorerURL:        c.ExplorerUrl,
 			PrivateKey:         c.PrivateKey,
 			MaxTrackRetry:      c.MaxTrackRetry,
 			SwapAgentAddresses: swapAgentAddresses,
-		}, &engine.Dependencies{
+		}, &spengine.Dependencies{
 			Client:    clients,
 			DB:        db.Session(&gorm.Session{}),
 			Recorder:  recorders,
 			SwapAgent: swapAgents,
 		})
 		e.Start()
+
+		se := sengine.NewEngine(&sengine.Config{
+			ChainID:            chainID,
+			ConfirmNum:         c.ConfirmNum,
+			ExplorerURL:        c.ExplorerUrl,
+			PrivateKey:         c.PrivateKey,
+			MaxTrackRetry:      c.MaxTrackRetry,
+			SwapAgentAddresses: swapAgentAddresses,
+		}, &sengine.Dependencies{
+			Client:    clients,
+			DB:        db.Session(&gorm.Session{}),
+			Recorder:  recorders,
+			SwapAgent: swapAgents,
+			Token:     tokens,
+		})
+		se.Start()
 	}
 
 	select {}
