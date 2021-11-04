@@ -18,10 +18,10 @@ import (
 	contractabi "github.com/synycboom/bsc-evm-compatible-bridge-core/abi"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/agent"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
-	observer "github.com/synycboom/bsc-evm-compatible-bridge-core/evm-observer"
-	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/evm-recorder/erc721"
+	engine "github.com/synycboom/bsc-evm-compatible-bridge-core/engine/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model"
-	engine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-pair-engine/erc721"
+	observer "github.com/synycboom/bsc-evm-compatible-bridge-core/observer"
+	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/recorder/erc721"
 	token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )

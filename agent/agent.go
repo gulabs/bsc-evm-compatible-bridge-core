@@ -11,7 +11,31 @@ import (
 )
 
 type SwapAgent interface {
-	FilterSwapPairRegister(opts *bind.FilterOpts, sponsor []common.Address, tokenAddress []common.Address) (*contractabi.ERC721SwapAgentSwapPairRegisterIterator, error)
-	FilterSwapPairCreated(opts *bind.FilterOpts, registerTxHash [][32]byte, fromTokenAddr []common.Address, mirroredTokenAddr []common.Address) (*contractabi.ERC721SwapAgentSwapPairCreatedIterator, error)
-	CreateSwapPair(opts *bind.TransactOpts, registerTxHash [32]byte, fromTokenAddr common.Address, fromChainId *big.Int, baseURI string, tokenName string, tokenSymbol string) (*types.Transaction, error)
+	FilterSwapPairRegister(
+		opts *bind.FilterOpts,
+		sponsor []common.Address,
+		tokenAddress []common.Address,
+	) (*contractabi.ERC721SwapAgentSwapPairRegisterIterator, error)
+
+	FilterSwapPairCreated(
+		opts *bind.FilterOpts, registerTxHash [][32]byte,
+		fromTokenAddr []common.Address,
+		mirroredTokenAddr []common.Address,
+	) (*contractabi.ERC721SwapAgentSwapPairCreatedIterator, error)
+
+	CreateSwapPair(
+		opts *bind.TransactOpts,
+		registerTxHash [32]byte,
+		fromTokenAddr common.Address,
+		fromChainId *big.Int, baseURI string,
+		tokenName string,
+		tokenSymbol string,
+	) (*types.Transaction, error)
+
+	FilterSwapStarted(
+		opts *bind.FilterOpts,
+		tokenAddr []common.Address,
+		sender []common.Address,
+		recipient []common.Address,
+	) (*contractabi.ERC721SwapAgentSwapStartedIterator, error)
 }

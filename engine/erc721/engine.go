@@ -8,7 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/agent"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
-	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/evm-recorder/erc721"
+	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/recorder/erc721"
 )
 
 type Recorder interface {

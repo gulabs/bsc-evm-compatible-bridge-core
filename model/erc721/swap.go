@@ -38,7 +38,7 @@ type Swap struct {
 	SrcTokenName string
 	DstTokenName string
 	Sender       string `gorm:"not null"`
-	Receiver     string `gorm:"not null"`
+	Recipient    string `gorm:"not null"`
 	TokenID      string `gorm:"not null"`
 	Signature    string `gorm:"not null"`
 
@@ -91,7 +91,7 @@ func (s *Swap) SignaturePayload() string {
 		s.SrcTokenName,
 		s.DstTokenName,
 		s.Sender,
-		s.Receiver,
+		s.Recipient,
 		s.TokenID,
 		s.RequestTxHash,
 		s.RequestHeight,
