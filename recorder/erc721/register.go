@@ -103,24 +103,6 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 	return nil
 }
 
-// func (r *Recorder) retrieveTokenURI(tokenAddr, tokenID string) (string, error) {
-// 	token, ok := r.deps.Token[r.ChainID()]
-// 	if !ok {
-// 		return "", errors.Errorf("[Recorder.retrieveTokenURI]: unsupported chain id %s", r.ChainID())
-// 	}
-
-// 	opts := &bind.CallOpts{
-// 		Pending: true,
-// 	}
-// 	tID := util.StrToBigInt(tokenID)
-// 	uri, err := token.TokenURI(opts, tokenAddr, tID)
-// 	if err != nil {
-// 		return "", errors.Wrap(err, "[Recorder.retrieveTokenURI]: failed to retrieve token URI")
-// 	}
-
-// 	return uri, nil
-// }
-
 func (r *Recorder) retrieveBaseURI(tokenAddr string) (string, error) {
 	token, ok := r.deps.Token[r.ChainID()]
 	if !ok {
