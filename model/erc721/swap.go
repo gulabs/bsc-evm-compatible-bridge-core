@@ -41,6 +41,7 @@ type Swap struct {
 	Recipient    string `gorm:"not null"`
 	TokenID      string `gorm:"not null"`
 	TokenURI     string `gorm:"not null"`
+	BaseURI      string
 	Signature    string `gorm:"not null"`
 
 	// Swap State
@@ -81,6 +82,31 @@ func (s *Swap) BeforeCreate(tx *gorm.DB) (err error) {
 	s.CreatedAt = time.Now()
 	s.UpdatedAt = time.Now()
 	return nil
+}
+
+func (s *Swap) IsRequiredInfoValid() bool {
+	if s.SrcTokenName == "" {
+		return false
+	}
+	if s.DstTokenAddr == "" {
+		return false
+	}
+	if s.DstTokenName == "" {
+		return false
+	}
+	if s.TokenURI == "" {
+		return false
+	}
+
+	return true
+}
+
+func (s *Swap) SetRequiredInfo(sp *SwapPair, tokenURI string) {
+	s.SrcTokenName = sp.SrcTokenName
+	s.DstTokenName = sp.DstTokenName
+	s.DstTokenAddr = sp.DstTokenAddr
+	s.BaseURI = sp.BaseURI
+	s.TokenURI = tokenURI
 }
 
 func (s *Swap) SignaturePayload() string {

@@ -51,9 +51,9 @@ func (e *Engine) retrieveTxReceipt(txHash, chainID string) (*types.Receipt, erro
 	return txRecipient, nil
 }
 
-func (e *Engine) retrieveDstTokenAddr(height uint64, fromTokenAddr, registerTxHash, chainID string) (string, error) {
+func (e *Engine) verifySwapFillEvent(height uint64, fromTokenAddr, requestTxHash, chainID string) (bool, error) {
 	if _, ok := e.deps.Client[chainID]; !ok {
-		return "", errors.Errorf("[Engine.retrieveDstTokenAddr]: client for chain id %s is not supported", chainID)
+		return false, errors.Errorf("[Engine.verifySwapFillEvent]: client for chain id %s is not supported", chainID)
 	}
 
 	ctx := context.Background()
@@ -62,28 +62,18 @@ func (e *Engine) retrieveDstTokenAddr(height uint64, fromTokenAddr, registerTxHa
 		End:     &height,
 		Context: ctx,
 	}
-	txHash := [32]byte(common.HexToHash(registerTxHash))
-	iter, err := e.deps.SwapAgent[chainID].FilterSwapPairCreated(&opts, [][32]byte{txHash}, nil, nil)
+	txHash := [32]byte(common.HexToHash(requestTxHash))
+	iter, err := e.deps.SwapAgent[chainID].FilterSwapFilled(&opts, [][32]byte{txHash}, nil, nil)
 	if err != nil {
-		return "", errors.Wrap(err, "[Engine.retrieveDstTokenAddr]: failed to filter logs")
+		return false, errors.Wrap(err, "[Engine.verifySwapFillEvent]: failed to filter logs")
 	}
 	defer func() {
 		if err := iter.Close(); err != nil {
-			util.Logger.Errorf("[Engine.retrieveDstTokenAddr]: failed to close iterator, %s", err.Error())
+			util.Logger.Errorf("[Engine.verifySwapFillEvent]: failed to close iterator, %s", err.Error())
 		}
 	}()
 
-	for iter.Next() {
-		if iter.Event.FromTokenAddr.String() == fromTokenAddr {
-			return iter.Event.MirroredTokenAddr.String(), nil
-		}
-	}
-
-	if err := iter.Error(); err != nil {
-		return "", errors.Wrap(err, "[Recorder.retrieveDstTokenAddr]: failed to iterate events")
-	}
-
-	return "", nil
+	return iter.Next(), nil
 }
 
 func (e *Engine) retrieveTokenURI(tokenAddr, tokenID, chainID string) (string, error) {

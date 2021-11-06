@@ -13,15 +13,10 @@ const (
 )
 
 func (e *Engine) Start() {
-	// SwapPair
 	go e.run(e.manageOngoingRequest, watchSwapEventDelay)
 	go e.run(e.manageConfirmedSwap, watchSwapEventDelay)
-	// SwapStateFillTxDryRunFailed SwapState = "fill_tx_dry_run_failed"
-	// SwapStateFillTxCreated      SwapState = "fill_tx_created"
-	// SwapStateFillTxSent         SwapState = "fill_tx_sent"
-	// SwapStateFillTxConfirmed    SwapState = "fill_tx_confirmed"
-	// SwapStateFillTxFailed       SwapState = "fill_tx_failed"
-	// SwapStateFillTxMissing      SwapState = "fill_tx_missing"
+	go e.run(e.manageTxCreatedSwap, watchSwapEventDelay)
+	go e.run(e.manageTxSentSwap, watchSwapEventDelay)
 }
 
 func (e *Engine) run(fn func(), delay time.Duration) {
