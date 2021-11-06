@@ -81,6 +81,11 @@ func (s *SwapPair) BeforeCreate(tx *gorm.DB) (err error) {
 	return nil
 }
 
+func (s *SwapPair) BeforeUpdate(tx *gorm.DB) (err error) {
+	s.UpdatedAt = time.Now()
+	return nil
+}
+
 func (s *SwapPair) SignaturePayload() string {
 	return fmt.Sprintf("%v#%v#%v#%v#%v#%v#%v#%v#%v#%v#%v#%v",
 		s.State,

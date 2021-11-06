@@ -14,6 +14,7 @@ import (
 )
 
 type SwapState string
+type SwapDirection string
 
 const (
 	SwapStateRequestOngoing     SwapState = "request_ongoing"
@@ -25,6 +26,9 @@ const (
 	SwapStateFillTxConfirmed    SwapState = "fill_tx_confirmed"
 	SwapStateFillTxFailed       SwapState = "fill_tx_failed"
 	SwapStateFillTxMissing      SwapState = "fill_tx_missing"
+
+	SwapDirectionForward  SwapDirection = "forward"
+	SwapDirectionBackward SwapDirection = "backward"
 )
 
 type Swap struct {
@@ -45,7 +49,8 @@ type Swap struct {
 	Signature    string `gorm:"not null"`
 
 	// Swap State
-	State SwapState `gorm:"not null"`
+	State         SwapState     `gorm:"not null"`
+	SwapDirection SwapDirection `gorm:"not null"`
 
 	// Request Transaction Information
 	RequestTxHash     string     `gorm:"not null"`
@@ -84,6 +89,11 @@ func (s *Swap) BeforeCreate(tx *gorm.DB) (err error) {
 	return nil
 }
 
+func (s *Swap) BeforeUpdate(tx *gorm.DB) (err error) {
+	s.UpdatedAt = time.Now()
+	return nil
+}
+
 func (s *Swap) IsRequiredInfoValid() bool {
 	if s.SrcTokenName == "" {
 		return false
@@ -94,18 +104,18 @@ func (s *Swap) IsRequiredInfoValid() bool {
 	if s.DstTokenName == "" {
 		return false
 	}
-	if s.TokenURI == "" {
+	if s.SwapDirection == SwapDirectionForward && s.TokenURI == "" {
 		return false
 	}
 
 	return true
 }
 
-func (s *Swap) SetRequiredInfo(sp *SwapPair, tokenURI string) {
-	s.SrcTokenName = sp.SrcTokenName
-	s.DstTokenName = sp.DstTokenName
-	s.DstTokenAddr = sp.DstTokenAddr
-	s.BaseURI = sp.BaseURI
+func (s *Swap) SetRequiredInfo(srcTokenName, dstTokenName, dstTokenAddr, baseURI, tokenURI string) {
+	s.SrcTokenName = srcTokenName
+	s.DstTokenName = dstTokenName
+	s.DstTokenAddr = dstTokenAddr
+	s.BaseURI = baseURI
 	s.TokenURI = tokenURI
 }
 
