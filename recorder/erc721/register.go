@@ -72,7 +72,6 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 			CreateBlockLogID: nil,
 		}
 
-		// TODO: handle error in case the contract has no baseURI method
 		baseURI, err := r.retrieveBaseURI(s.SrcTokenAddr)
 		if err != nil {
 			return errors.Wrap(err, "[Recorder.recordRegisterTx]: failed to get baseURI")

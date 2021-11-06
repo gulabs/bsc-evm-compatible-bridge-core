@@ -15,6 +15,9 @@ func (r *Recorder) Record(tx *gorm.DB, b *block.Log) error {
 	if err := r.recordSwapTx(tx, b); err != nil {
 		return errors.Wrap(err, "[Recorder.Record]: failed to record swap tx")
 	}
+	if err := r.recordBackwardSwapTx(tx, b); err != nil {
+		return errors.Wrap(err, "[Recorder.Record]: failed to record backward swap tx")
+	}
 
 	return nil
 }
