@@ -55,4 +55,18 @@ type SwapAgent interface {
 		tokenId *big.Int,
 		tokenURI string,
 	) (*types.Transaction, error)
+
+	FilterBackwardSwapStarted(
+		opts *bind.FilterOpts,
+		mirroredTokenAddr []common.Address,
+		sender []common.Address,
+		recipient []common.Address,
+	) (*contractabi.ERC721SwapAgentBackwardSwapStartedIterator, error)
+
+	FilterBackwardSwapFilled(
+		opts *bind.FilterOpts,
+		swapTxHash [][32]byte,
+		tokenAddr []common.Address,
+		recipient []common.Address,
+	) (*contractabi.ERC721SwapAgentBackwardSwapFilledIterator, error)
 }
