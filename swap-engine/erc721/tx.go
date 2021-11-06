@@ -51,9 +51,9 @@ func (e *Engine) retrieveTxReceipt(txHash, chainID string) (*types.Receipt, erro
 	return txRecipient, nil
 }
 
-func (e *Engine) verifySwapFillEvent(height uint64, fromTokenAddr, requestTxHash, chainID string) (bool, error) {
+func (e *Engine) verifyForwardSwapFillEvent(height uint64, requestTxHash, chainID string) (bool, error) {
 	if _, ok := e.deps.Client[chainID]; !ok {
-		return false, errors.Errorf("[Engine.verifySwapFillEvent]: client for chain id %s is not supported", chainID)
+		return false, errors.Errorf("[Engine.verifyForwardSwapFillEvent]: client for chain id %s is not supported", chainID)
 	}
 
 	ctx := context.Background()
@@ -65,11 +65,36 @@ func (e *Engine) verifySwapFillEvent(height uint64, fromTokenAddr, requestTxHash
 	txHash := [32]byte(common.HexToHash(requestTxHash))
 	iter, err := e.deps.SwapAgent[chainID].FilterSwapFilled(&opts, [][32]byte{txHash}, nil, nil)
 	if err != nil {
-		return false, errors.Wrap(err, "[Engine.verifySwapFillEvent]: failed to filter logs")
+		return false, errors.Wrap(err, "[Engine.verifyForwardSwapFillEvent]: failed to filter logs")
 	}
 	defer func() {
 		if err := iter.Close(); err != nil {
-			util.Logger.Errorf("[Engine.verifySwapFillEvent]: failed to close iterator, %s", err.Error())
+			util.Logger.Errorf("[Engine.verifyForwardSwapFillEvent]: failed to close iterator, %s", err.Error())
+		}
+	}()
+
+	return iter.Next(), nil
+}
+
+func (e *Engine) verifyBackwardSwapFillEvent(height uint64, requestTxHash, chainID string) (bool, error) {
+	if _, ok := e.deps.Client[chainID]; !ok {
+		return false, errors.Errorf("[Engine.verifyBackwardSwapFillEvent]: client for chain id %s is not supported", chainID)
+	}
+
+	ctx := context.Background()
+	opts := bind.FilterOpts{
+		Start:   height,
+		End:     &height,
+		Context: ctx,
+	}
+	txHash := [32]byte(common.HexToHash(requestTxHash))
+	iter, err := e.deps.SwapAgent[chainID].FilterBackwardSwapFilled(&opts, [][32]byte{txHash}, nil, nil)
+	if err != nil {
+		return false, errors.Wrap(err, "[Engine.verifyBackwardSwapFillEvent]: failed to filter logs")
+	}
+	defer func() {
+		if err := iter.Close(); err != nil {
+			util.Logger.Errorf("[Engine.verifyBackwardSwapFillEvent]: failed to close iterator, %s", err.Error())
 		}
 	}()
 

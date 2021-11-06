@@ -43,14 +43,20 @@ func (e *Engine) sendFillSwapRequest(s *erc721.Swap, dryRun bool) (*types.Transa
 		return nil, errors.Wrap(err, "[Engine.sendFillSwapRequest]: failed to create tx opts")
 	}
 
-	txOpts.NoSend = dryRun
+	tokenAddr := s.SrcTokenAddr
+	tokenChainID := s.SrcChainID
+	if s.SwapDirection == erc721.SwapDirectionBackward {
+		tokenAddr = s.DstTokenAddr
+		tokenChainID = s.SrcChainID
+	}
 
+	txOpts.NoSend = dryRun
 	tx, err := e.deps.SwapAgent[dstChainID].Fill(
 		txOpts,
 		common.HexToHash(s.RequestTxHash),
-		common.HexToAddress(s.SrcTokenAddr),
+		common.HexToAddress(tokenAddr),
 		common.HexToAddress(s.Recipient),
-		util.StrToBigInt(s.SrcChainID),
+		util.StrToBigInt(tokenChainID),
 		util.StrToBigInt(s.TokenID),
 		s.TokenURI,
 	)
@@ -83,42 +89,101 @@ func (e *Engine) querySwap(fromChainID string, states []erc721.SwapState) ([]*er
 
 // fillRequiredInfo fills swap destination tokens
 func (e *Engine) fillRequiredInfo(ss []*erc721.Swap) error {
-	// TODO: check db index
 	for _, s := range ss {
 		if s.IsRequiredInfoValid() {
 			continue
 		}
 
-		var sp erc721.SwapPair
-		err := e.deps.DB.Where(
-			"src_token_addr = ? and src_chain_id = ? and dst_chain_id = ? and available = ?",
-			s.SrcTokenAddr,
-			s.SrcChainID,
-			s.DstChainID,
-			true,
-		).First(&sp).Error
-
 		s.RequestTrackRetry += 1
 
-		if err == gorm.ErrRecordNotFound {
+		var skip bool
+		var err error
+		if s.SwapDirection == erc721.SwapDirectionForward {
+			skip, err = e.fillForward(s)
+		} else {
+			skip, err = e.fillBackward(s)
+		}
+
+		if skip {
 			continue
 		}
 		if err != nil {
-			return errors.Wrap(err, "[Engine.fillRequiredInfo]: failed to query available Swaps")
+			return errors.Wrap(err, "[Engine.fillRequiredInfo]: failed to fill required information")
 		}
-
-		tokenURI, err := e.retrieveTokenURI(s.SrcTokenAddr, s.TokenID, s.SrcChainID)
-		if err != nil {
-			return errors.Wrapf(err, "[Engine.fillRequiredInfo]: failed to retrieve token uri of token %s, chain id %", s.SrcTokenAddr, s.SrcChainID)
-		}
-		if tokenURI == "" {
-			util.Logger.Infof("[Engine.fillRequiredInfo]: token %s, chain id % has no token uri", s.SrcTokenAddr, s.SrcChainID)
-		}
-
-		s.SetRequiredInfo(&sp, tokenURI)
 	}
 
 	return nil
+}
+
+func (e *Engine) fillForward(s *erc721.Swap) (skip bool, err error) {
+	// TODO: check db index
+	var sp erc721.SwapPair
+	err = e.deps.DB.Where(
+		"src_token_addr = ? and src_chain_id = ? and dst_chain_id = ? and available = ?",
+		s.SrcTokenAddr,
+		s.SrcChainID,
+		s.DstChainID,
+		true,
+	).First(&sp).Error
+
+	if err == gorm.ErrRecordNotFound {
+		return true, nil
+	}
+	if err != nil {
+		return false, errors.Wrap(err, "[Engine.fillForward]: failed to query available Swaps")
+	}
+
+	var tokenURI string
+	if sp.BaseURI == "" {
+		tokenURI, err = e.retrieveTokenURI(s.SrcTokenAddr, s.TokenID, s.SrcChainID)
+		if err != nil {
+			return false, errors.Wrapf(err, "[Engine.fillForward]: failed to retrieve token uri of token %s, chain id %", s.SrcTokenAddr, s.SrcChainID)
+		}
+		if tokenURI == "" {
+			util.Logger.Infof("[Engine.fillForward]: token %s, chain id % has no token uri", s.SrcTokenAddr, s.SrcChainID)
+		}
+	} else {
+		tokenURI = s.TokenID
+	}
+
+	s.SetRequiredInfo(
+		sp.SrcTokenName,
+		sp.DstTokenName,
+		sp.DstTokenAddr,
+		sp.BaseURI,
+		tokenURI,
+	)
+
+	return false, nil
+}
+
+func (e *Engine) fillBackward(s *erc721.Swap) (skip bool, err error) {
+	// TODO: check db index
+	var sp erc721.SwapPair
+	err = e.deps.DB.Where(
+		"dst_token_addr = ? and dst_chain_id = ? and src_chain_id = ? and available = ?",
+		s.SrcTokenAddr,
+		s.SrcChainID,
+		s.DstChainID,
+		true,
+	).First(&sp).Error
+
+	if err == gorm.ErrRecordNotFound {
+		return true, nil
+	}
+	if err != nil {
+		return false, errors.Wrap(err, "[Engine.fillBackward]: failed to query available Swaps")
+	}
+
+	s.SetRequiredInfo(
+		sp.DstTokenName,
+		sp.SrcTokenName,
+		sp.SrcTokenAddr,
+		"",
+		"",
+	)
+
+	return false, nil
 }
 
 func (e *Engine) separateSwapEvents(ss []*erc721.Swap) (pass []*erc721.Swap, pending []*erc721.Swap, rejected []*erc721.Swap) {

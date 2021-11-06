@@ -100,16 +100,27 @@ func (e *Engine) manageTxCreatedSwap() {
 			continue
 		}
 
-		createBlockHeight := receipt.BlockNumber.Int64()
-		isValid, err := e.verifySwapFillEvent(uint64(createBlockHeight), s.SrcTokenAddr, s.RequestTxHash, s.DstChainID)
-		if err != nil {
-			util.Logger.Error(
-				errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to get destination token address for Swap %s", s.ID),
-			)
+		var isValid bool
+		fillBlockHeight := receipt.BlockNumber.Int64()
+		if s.SwapDirection == erc721.SwapDirectionForward {
+			isValid, err = e.verifyForwardSwapFillEvent(uint64(fillBlockHeight), s.RequestTxHash, s.DstChainID)
+			if err != nil {
+				util.Logger.Error(
+					errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to verify swap fill event for Swap %s", s.ID),
+				)
 
-			continue
+				continue
+			}
+		} else {
+			isValid, err = e.verifyBackwardSwapFillEvent(uint64(fillBlockHeight), s.RequestTxHash, s.DstChainID)
+			if err != nil {
+				util.Logger.Error(
+					errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to verify backward swap fill event for Swap %s", s.ID),
+				)
+
+				continue
+			}
 		}
-
 		if !isValid {
 			s.State = erc721.SwapStateFillTxFailed
 			s.MessageLog = "[Engine.manageTxCreatedSwap]: swap fill event was not found!"
@@ -127,7 +138,7 @@ func (e *Engine) manageTxCreatedSwap() {
 		s.FillGasPrice = gasPrice.String()
 		s.FillConsumedFeeAmount = big.NewInt(1).Mul(gasPrice, big.NewInt(s.FillGasUsed)).String()
 		s.FillGasUsed = int64(receipt.GasUsed)
-		s.FillHeight = createBlockHeight
+		s.FillHeight = fillBlockHeight
 		s.FillBlockHash = receipt.BlockHash.String()
 		s.FillBlockLogID = &b.ID
 		s.State = erc721.SwapStateFillTxSent
