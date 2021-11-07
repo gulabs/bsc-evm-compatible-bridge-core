@@ -79,7 +79,7 @@ type Swap struct {
 }
 
 func (Swap) TableName() string {
-	return "erc721_swap"
+	return "erc721_swaps"
 }
 
 func (s *Swap) BeforeCreate(tx *gorm.DB) (err error) {
