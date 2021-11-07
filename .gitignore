@@ -19,3 +19,5 @@ build/*
 cmd/*.json
 cmd/send_request
 config/local.json
+
+.env
