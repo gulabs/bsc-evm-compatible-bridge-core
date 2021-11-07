@@ -1,0 +1,59 @@
+{
+  "key_manager_config": {
+    "key_type": "local_private_key",
+    "aws_region": "",
+    "aws_secret_name": "",
+    "hmac_key": "1234"
+  },
+  "db_config": {
+    "log_level": "WARN",
+    "dsn": "username:password@tcp(host.docker.internal:3306)/nft_bridge?charset=utf8mb4&parseTime=True&loc=Local"
+  },
+  "chain_configs": [{
+    "id": "1000",
+    "balance_monitor_interval": 60,
+    "balance_alert_threshold": "1000000000000000000",
+    "name": "CHAIN1",
+    "observer_fetch_interval": 1,
+    "start_height": 0,
+    "provider": "http://localhost:19545",
+    "private_key": "0000000000000000000000000000000000000000000000000000000000000001",
+    "confirm_num": 2,
+    "swap_agent_addr": "0xDe09E74d4888Bc4e65F589e8c13Bce9F71DdF4c7",
+    "explorer_url": "https://testnet.chain1.com/tx",
+    "max_track_retry": 5,
+    "wait_milli_sec_between_tx": 100
+  }, {
+    "id": "2000",
+    "balance_monitor_interval": 60,
+    "balance_alert_threshold": "1000000000000000000",
+    "name": "CHAIN2",
+    "observer_fetch_interval": 1,
+    "start_height": 0,
+    "provider": "http://localhost:19546",
+    "private_key": "0000000000000000000000000000000000000000000000000000000000000001",
+    "confirm_num": 2,
+    "swap_agent_addr": "0xDe09E74d4888Bc4e65F589e8c13Bce9F71DdF4c7",
+    "explorer_url": "https://testnet.chain2.com/tx",
+    "max_track_retry": 5,
+    "wait_milli_sec_between_tx": 100
+  }],
+  "log_config": {
+    "level": "INFO",
+    "filename": "build/test.log",
+    "max_file_size_in_mb": 100,
+    "max_backups_of_log_files": 1,
+    "max_age_to_retain_log_files_in_days": 30,
+    "use_console_logger": true,
+    "use_file_logger": false,
+    "compress": false
+  },
+  "alert_config": {
+    "telegram_bot_id": "",
+    "telegram_chat_id": "",
+    "block_update_timeout": 10
+  },
+  "admin_config": {
+    "listen_addr": ":8000"
+  }
+}
