@@ -15,6 +15,7 @@ import (
 )
 
 type SwapState string
+
 type SwapDirection string
 
 const (
@@ -44,7 +45,6 @@ type Swap struct {
 	Recipient    string         `gorm:"not null"`
 	IDs          datatypes.JSON `gorm:"not null"`
 	Amounts      datatypes.JSON `gorm:"not null"`
-	TokenURI     string         `gorm:"not null"`
 	Signature    string         `gorm:"not null"`
 
 	// Swap State
