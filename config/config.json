@@ -7,7 +7,7 @@
   },
   "db_config": {
     "log_level": "WARN",
-    "dsn": "username:password@tcp(host.docker.internal:3306)/nft_bridge?charset=utf8mb4&parseTime=True&loc=Local"
+    "dsn": "username:password@tcp(localhost:3306)/nft_bridge?charset=utf8mb4&parseTime=True&loc=Local"
   },
   "chain_configs": [{
     "id": "1000",

@@ -14,7 +14,9 @@ require (
 	github.com/tendermint/tendermint v0.34.14
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/sys v0.0.0-20211023085530-d6a326fbbf70 // indirect
+	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
+	gorm.io/datatypes v1.0.3 // indirect
 	gorm.io/driver/mysql v1.1.3 // indirect
 	gorm.io/gorm v1.22.2 // indirect
 )
