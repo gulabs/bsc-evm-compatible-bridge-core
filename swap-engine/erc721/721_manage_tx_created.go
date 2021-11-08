@@ -11,13 +11,13 @@ import (
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )
 
-func (e *Engine) manageTxCreatedSwap() {
+func (e *Engine) manageERC721TxCreatedSwap() {
 	fromChainID := e.chainID()
-	ss, err := e.querySwap(fromChainID, []erc721.SwapState{
+	ss, err := e.queryERC721Swap(fromChainID, []erc721.SwapState{
 		erc721.SwapStateFillTxCreated,
 	})
 	if err != nil {
-		util.Logger.Error(errors.Wrap(err, "[Engine.manageTxCreatedSwap]: failed to query tx_created Swaps"))
+		util.Logger.Error(errors.Wrap(err, "[Engine.manageERC721TxCreatedSwap]: failed to query tx_created Swaps"))
 		return
 	}
 
@@ -25,38 +25,38 @@ func (e *Engine) manageTxCreatedSwap() {
 		ethTx, isPending, err := e.retrieveTx(s.FillTxHash, s.DstChainID)
 		if err != nil {
 			util.Logger.Error(
-				errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to get Swap creation tx %s", s.FillTxHash),
+				errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to get Swap creation tx %s", s.FillTxHash),
 			)
 
 			continue
 		}
 		if isPending {
-			util.Logger.Infof("[Engine.manageTxCreatedSwap]: the tx %s is pending in mempools, skip", s.FillTxHash)
+			util.Logger.Infof("[Engine.manageERC721TxCreatedSwap]: the tx %s is pending in mempools, skip", s.FillTxHash)
 			continue
 		}
 
 		receipt, err := e.retrieveTxReceipt(s.FillTxHash, s.DstChainID)
 		if err != nil {
 			util.Logger.Error(
-				errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to get Swap creation receipt for tx %s", s.FillTxHash),
+				errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to get Swap creation receipt for tx %s", s.FillTxHash),
 			)
 
 			continue
 		}
 
 		if ethTx == nil {
-			util.Logger.Infof("[Engine.manageTxCreatedSwap]: the tx is not found while cheking tx %s", s.FillTxHash)
+			util.Logger.Infof("[Engine.manageERC721TxCreatedSwap]: the tx is not found while cheking tx %s", s.FillTxHash)
 		}
 
 		if receipt == nil {
-			util.Logger.Infof("[Engine.manageTxCreatedSwap]: the receipt is not found while cheking tx %s", s.FillTxHash)
+			util.Logger.Infof("[Engine.manageERC721TxCreatedSwap]: the receipt is not found while cheking tx %s", s.FillTxHash)
 		}
 
 		if ethTx == nil || receipt == nil {
 			s.FillTrackRetry += 1
 			if err := e.deps.DB.Save(s).Error; err != nil {
 				util.Logger.Error(
-					errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to increase create track retry counter %s", s.ID),
+					errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to increase create track retry counter %s", s.ID),
 				)
 
 				continue
@@ -64,10 +64,10 @@ func (e *Engine) manageTxCreatedSwap() {
 
 			if s.FillTrackRetry > e.conf.MaxTrackRetry {
 				s.State = erc721.SwapStateFillTxMissing
-				s.MessageLog = "[Engine.manageTxCreatedSwap]: tx is missing"
+				s.MessageLog = "[Engine.manageERC721TxCreatedSwap]: tx is missing"
 				if err := e.deps.DB.Save(s).Error; err != nil {
 					util.Logger.Error(
-						errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to update Swap %s to '%s' state", s.ID, s.State),
+						errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to update Swap %s to '%s' state", s.ID, s.State),
 					)
 
 					continue
@@ -88,13 +88,13 @@ func (e *Engine) manageTxCreatedSwap() {
 			&b,
 		).Error
 		if err == gorm.ErrRecordNotFound {
-			util.Logger.Infof("[Engine.manageTxCreatedSwap]: wait for the system to catch up the block %s in chain id %s", receipt.BlockHash.String(), e.chainID())
+			util.Logger.Infof("[Engine.manageERC721TxCreatedSwap]: wait for the system to catch up the block %s in chain id %s", receipt.BlockHash.String(), e.chainID())
 
 			continue
 		}
 		if err != nil {
 			util.Logger.Error(
-				errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to update Swap %s to '%s' state", s.ID, s.State),
+				errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to update Swap %s to '%s' state", s.ID, s.State),
 			)
 
 			continue
@@ -103,19 +103,19 @@ func (e *Engine) manageTxCreatedSwap() {
 		var isValid bool
 		fillBlockHeight := receipt.BlockNumber.Int64()
 		if s.SwapDirection == erc721.SwapDirectionForward {
-			isValid, err = e.verifyForwardSwapFillEvent(uint64(fillBlockHeight), s.RequestTxHash, s.DstChainID)
+			isValid, err = e.verifyERC721ForwardSwapFillEvent(uint64(fillBlockHeight), s.RequestTxHash, s.DstChainID)
 			if err != nil {
 				util.Logger.Error(
-					errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to verify swap fill event for Swap %s", s.ID),
+					errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to verify swap fill event for Swap %s", s.ID),
 				)
 
 				continue
 			}
 		} else {
-			isValid, err = e.verifyBackwardSwapFillEvent(uint64(fillBlockHeight), s.RequestTxHash, s.DstChainID)
+			isValid, err = e.verifyERC721BackwardSwapFillEvent(uint64(fillBlockHeight), s.RequestTxHash, s.DstChainID)
 			if err != nil {
 				util.Logger.Error(
-					errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to verify backward swap fill event for Swap %s", s.ID),
+					errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to verify backward swap fill event for Swap %s", s.ID),
 				)
 
 				continue
@@ -123,10 +123,10 @@ func (e *Engine) manageTxCreatedSwap() {
 		}
 		if !isValid {
 			s.State = erc721.SwapStateFillTxFailed
-			s.MessageLog = "[Engine.manageTxCreatedSwap]: swap fill event was not found!"
+			s.MessageLog = "[Engine.manageERC721TxCreatedSwap]: swap fill event was not found!"
 			if err := e.deps.DB.Save(s).Error; err != nil {
 				util.Logger.Error(
-					errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to update Swap %s to '%s' state", s.ID, s.State),
+					errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to update Swap %s to '%s' state", s.ID, s.State),
 				)
 
 				continue
@@ -144,12 +144,12 @@ func (e *Engine) manageTxCreatedSwap() {
 		s.State = erc721.SwapStateFillTxSent
 		if err := e.deps.DB.Save(s).Error; err != nil {
 			util.Logger.Error(
-				errors.Wrapf(err, "[Engine.manageTxCreatedSwap]: failed to update Swap %s basic info", s.ID),
+				errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to update Swap %s basic info", s.ID),
 			)
 
 			continue
 		}
 
-		util.Logger.Infof("[Engine.manageTxCreatedSwap]: updated Swap %s after sending out with tx hash %s", s.ID, s.FillTxHash)
+		util.Logger.Infof("[Engine.manageERC721TxCreatedSwap]: updated Swap %s after sending out with tx hash %s", s.ID, s.FillTxHash)
 	}
 }

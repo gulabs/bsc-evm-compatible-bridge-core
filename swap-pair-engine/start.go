@@ -13,11 +13,17 @@ const (
 )
 
 func (e *Engine) Start() {
-	// SwapPair
-	go e.run(e.manageOngoingRegistration, watchRegisterEventDelay)
-	go e.run(e.manageConfirmedRegitration, watchRegisterEventDelay)
-	go e.run(e.manageTxCreatedRegistration, watchRegisterEventDelay)
-	go e.run(e.manageTxSentRegistration, watchRegisterEventDelay)
+	// ERC721
+	go e.run(e.manageERC721OngoingRegistration, watchRegisterEventDelay)
+	go e.run(e.manageERC721ConfirmedRegitration, watchRegisterEventDelay)
+	go e.run(e.manageERC721TxCreatedRegistration, watchRegisterEventDelay)
+	go e.run(e.manageERC721TxSentRegistration, watchRegisterEventDelay)
+
+	// ERC1155
+	go e.run(e.manageERC1155OngoingRegistration, watchRegisterEventDelay)
+	go e.run(e.manageERC1155ConfirmedRegitration, watchRegisterEventDelay)
+	go e.run(e.manageERC1155TxCreatedRegistration, watchRegisterEventDelay)
+	go e.run(e.manageERC1155TxSentRegistration, watchRegisterEventDelay)
 }
 
 func (e *Engine) run(fn func(), delay time.Duration) {

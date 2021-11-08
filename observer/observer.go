@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/recorder/erc721"
+	"github.com/synycboom/bsc-evm-compatible-bridge-core/recorder"
 )
 
 type Config struct {

@@ -2,24 +2,21 @@ package recorder
 
 import (
 	"context"
+	"encoding/json"
 	"math"
-	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/pkg/errors"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/block"
-	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/erc721"
+	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/erc1155"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )
 
-var (
-	swapFilterLogsTimeout = time.Duration(20) * time.Second
-)
-
-func (r *Recorder) recordSwapTx(tx *gorm.DB, b *block.Log) error {
+func (r *Recorder) recordERC1155SwapTx(tx *gorm.DB, b *block.Log) error {
 	ctx, cancel := context.WithTimeout(context.Background(), swapFilterLogsTimeout)
 	defer cancel()
 
@@ -29,32 +26,51 @@ func (r *Recorder) recordSwapTx(tx *gorm.DB, b *block.Log) error {
 		End:     &height,
 		Context: ctx,
 	}
-	iter, err := r.deps.SwapAgent[r.ChainID()].FilterSwapStarted(&opts, nil, nil, nil)
+	iter, err := r.deps.ERC1155SwapAgent[r.ChainID()].FilterSwapStarted(&opts, nil, nil, nil)
 	if err != nil {
-		return errors.Wrap(err, "[Recorder.recordSwapTx]: failed to filter logs")
+		return errors.Wrap(err, "[Recorder.recordERC1155SwapTx]: failed to filter logs")
 	}
 	defer func() {
 		if err := iter.Close(); err != nil {
-			util.Logger.Errorf("[Recorder.recordSwapTx]: failed to close iterator, %s", err.Error())
+			util.Logger.Errorf("[Recorder.recordERC1155SwapTx]: failed to close iterator, %s", err.Error())
 		}
 	}()
 
-	var ss []erc721.Swap
+	var ss []erc1155.Swap
 	for iter.Next() {
-		s := erc721.Swap{
+		idList := util.BigIntSliceToStrSlice(iter.Event.Ids)
+		amountList := util.BigIntSliceToStrSlice(iter.Event.Amounts)
+		if len(idList) != len(amountList) {
+			util.Logger.Warningf(
+				"[Recorder.recordERC1155SwapTx]: chain id %s, token %s, length of ids and amounts are not equal",
+				r.ChainID(),
+				iter.Event.TokenAddr.String(),
+			)
+
+			continue
+		}
+
+		ids, err := json.Marshal(idList)
+		if err != nil {
+			return errors.Wrap(err, "[Recorder.recordERC1155SwapTx]: failed to marshal ids")
+		}
+		amounts, err := json.Marshal(amountList)
+		if err != nil {
+			return errors.Wrap(err, "[Recorder.recordERC1155SwapTx]: failed to marshal amounts")
+		}
+
+		s := erc1155.Swap{
 			SrcChainID:            r.ChainID(),
 			DstChainID:            iter.Event.DstChainId.String(),
 			SrcTokenAddr:          iter.Event.TokenAddr.String(),
 			DstTokenAddr:          "",
-			SrcTokenName:          "",
-			DstTokenName:          "",
 			Sender:                iter.Event.Sender.String(),
 			Recipient:             iter.Event.Recipient.String(),
-			TokenID:               iter.Event.TokenId.String(),
-			TokenURI:              "",
+			IDs:                   datatypes.JSON(ids),
+			Amounts:               datatypes.JSON(amounts),
 			Signature:             "",
-			State:                 erc721.SwapStateRequestOngoing,
-			SwapDirection:         erc721.SwapDirectionForward,
+			State:                 erc1155.SwapStateRequestOngoing,
+			SwapDirection:         erc1155.SwapDirectionForward,
 			RequestTxHash:         iter.Event.Raw.TxHash.String(),
 			RequestHeight:         int64(iter.Event.Raw.BlockNumber),
 			RequestBlockHash:      iter.Event.Raw.BlockHash.String(),
@@ -77,7 +93,7 @@ func (r *Recorder) recordSwapTx(tx *gorm.DB, b *block.Log) error {
 	}
 
 	if err := iter.Error(); err != nil {
-		return errors.Wrap(err, "[Recorder.recordSwapTx]: failed to iterate events")
+		return errors.Wrap(err, "[Recorder.recordERC1155SwapTx]: failed to iterate events")
 	}
 
 	err = tx.Clauses(
@@ -88,13 +104,13 @@ func (r *Recorder) recordSwapTx(tx *gorm.DB, b *block.Log) error {
 		&ss, 100,
 	).Error
 	if err != nil {
-		return errors.Wrap(err, "[Recorder.recordSwapTx]: failed to bulk create")
+		return errors.Wrap(err, "[Recorder.recordERC1155SwapTx]: failed to bulk create")
 	}
 
 	return nil
 }
 
-func (r *Recorder) recordBackwardSwapTx(tx *gorm.DB, b *block.Log) error {
+func (r *Recorder) recordERC1155BackwardSwapTx(tx *gorm.DB, b *block.Log) error {
 	ctx, cancel := context.WithTimeout(context.Background(), swapFilterLogsTimeout)
 	defer cancel()
 
@@ -104,32 +120,51 @@ func (r *Recorder) recordBackwardSwapTx(tx *gorm.DB, b *block.Log) error {
 		End:     &height,
 		Context: ctx,
 	}
-	iter, err := r.deps.SwapAgent[r.ChainID()].FilterBackwardSwapStarted(&opts, nil, nil, nil)
+	iter, err := r.deps.ERC1155SwapAgent[r.ChainID()].FilterBackwardSwapStarted(&opts, nil, nil, nil)
 	if err != nil {
-		return errors.Wrap(err, "[Recorder.recordBackwardSwapTx]: failed to filter logs")
+		return errors.Wrap(err, "[Recorder.recordERC1155BackwardSwapTx]: failed to filter logs")
 	}
 	defer func() {
 		if err := iter.Close(); err != nil {
-			util.Logger.Errorf("[Recorder.recordBackwardSwapTx]: failed to close iterator, %s", err.Error())
+			util.Logger.Errorf("[Recorder.recordERC1155BackwardSwapTx]: failed to close iterator, %s", err.Error())
 		}
 	}()
 
-	var ss []erc721.Swap
+	var ss []erc1155.Swap
 	for iter.Next() {
-		s := erc721.Swap{
+		idList := util.BigIntSliceToStrSlice(iter.Event.Ids)
+		amountList := util.BigIntSliceToStrSlice(iter.Event.Amounts)
+		if len(idList) != len(amountList) {
+			util.Logger.Warningf(
+				"[Recorder.recordERC1155BackwardSwapTx]: chain id %s, token %s, length of ids and amounts are not equal",
+				r.ChainID(),
+				iter.Event.MirroredTokenAddr.String(),
+			)
+
+			continue
+		}
+
+		ids, err := json.Marshal(idList)
+		if err != nil {
+			return errors.Wrap(err, "[Recorder.recordERC1155BackwardSwapTx]: failed to marshal ids")
+		}
+		amounts, err := json.Marshal(amountList)
+		if err != nil {
+			return errors.Wrap(err, "[Recorder.recordERC1155BackwardSwapTx]: failed to marshal amounts")
+		}
+
+		s := erc1155.Swap{
 			SrcChainID:            r.ChainID(),
 			DstChainID:            iter.Event.DstChainId.String(),
 			SrcTokenAddr:          iter.Event.MirroredTokenAddr.String(),
 			DstTokenAddr:          "",
-			SrcTokenName:          "",
-			DstTokenName:          "",
 			Sender:                iter.Event.Sender.String(),
 			Recipient:             iter.Event.Recipient.String(),
-			TokenID:               iter.Event.TokenId.String(),
-			TokenURI:              "",
+			IDs:                   datatypes.JSON(ids),
+			Amounts:               datatypes.JSON(amounts),
 			Signature:             "",
-			State:                 erc721.SwapStateRequestOngoing,
-			SwapDirection:         erc721.SwapDirectionBackward,
+			State:                 erc1155.SwapStateRequestOngoing,
+			SwapDirection:         erc1155.SwapDirectionBackward,
 			RequestTxHash:         iter.Event.Raw.TxHash.String(),
 			RequestHeight:         int64(iter.Event.Raw.BlockNumber),
 			RequestBlockHash:      iter.Event.Raw.BlockHash.String(),
@@ -152,7 +187,7 @@ func (r *Recorder) recordBackwardSwapTx(tx *gorm.DB, b *block.Log) error {
 	}
 
 	if err := iter.Error(); err != nil {
-		return errors.Wrap(err, "[Recorder.recordBackwardSwapTx]: failed to iterate events")
+		return errors.Wrap(err, "[Recorder.recordERC1155BackwardSwapTx]: failed to iterate events")
 	}
 
 	err = tx.Clauses(
@@ -163,7 +198,7 @@ func (r *Recorder) recordBackwardSwapTx(tx *gorm.DB, b *block.Log) error {
 		&ss, 100,
 	).Error
 	if err != nil {
-		return errors.Wrap(err, "[Recorder.recordBackwardSwapTx]: failed to bulk create")
+		return errors.Wrap(err, "[Recorder.recordERC1155BackwardSwapTx]: failed to bulk create")
 	}
 
 	return nil

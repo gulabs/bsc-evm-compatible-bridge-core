@@ -22,7 +22,7 @@ var (
 	registerFilterLogsTimeout = time.Duration(20) * time.Second
 )
 
-func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
+func (r *Recorder) recordERC721RegisterTx(tx *gorm.DB, b *block.Log) error {
 	ctx, cancel := context.WithTimeout(context.Background(), registerFilterLogsTimeout)
 	defer cancel()
 
@@ -32,13 +32,13 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 		End:     &height,
 		Context: ctx,
 	}
-	iter, err := r.deps.SwapAgent[r.ChainID()].FilterSwapPairRegister(&opts, nil, nil)
+	iter, err := r.deps.ERC721SwapAgent[r.ChainID()].FilterSwapPairRegister(&opts, nil, nil)
 	if err != nil {
-		return errors.Wrap(err, "[Recorder.recordRegisterTx]: failed to filter logs")
+		return errors.Wrap(err, "[Recorder.recordERC721RegisterTx]: failed to filter logs")
 	}
 	defer func() {
 		if err := iter.Close(); err != nil {
-			util.Logger.Errorf("[Recorder.recordRegisterTx]: failed to close iterator, %s", err.Error())
+			util.Logger.Errorf("[Recorder.recordERC721RegisterTx]: failed to close iterator, %s", err.Error())
 		}
 	}()
 
@@ -72,12 +72,12 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 			CreateBlockLogID: nil,
 		}
 
-		baseURI, err := r.retrieveBaseURI(s.SrcTokenAddr)
+		baseURI, err := r.retrieveERC21BaseURI(s.SrcTokenAddr)
 		if err != nil {
-			return errors.Wrap(err, "[Recorder.recordRegisterTx]: failed to get baseURI")
+			return errors.Wrap(err, "[Recorder.recordERC721RegisterTx]: failed to get baseURI")
 		}
 		if baseURI == "" {
-			util.Logger.Infof("[Recorder.recordRegisterTx]: chain id %s, token %s has no baseURI", s.SrcChainID, s.SrcTokenAddr)
+			util.Logger.Infof("[Recorder.recordERC721RegisterTx]: chain id %s, token %s has no baseURI", s.SrcChainID, s.SrcTokenAddr)
 		}
 
 		s.BaseURI = baseURI
@@ -85,7 +85,7 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 	}
 
 	if err := iter.Error(); err != nil {
-		return errors.Wrap(err, "[Recorder.recordRegisterTx]: failed to iterate events")
+		return errors.Wrap(err, "[Recorder.recordERC721RegisterTx]: failed to iterate events")
 	}
 
 	err = tx.Clauses(
@@ -96,16 +96,16 @@ func (r *Recorder) recordRegisterTx(tx *gorm.DB, b *block.Log) error {
 		&ss, 100,
 	).Error
 	if err != nil {
-		return errors.Wrap(err, "[Recorder.recordRegisterTx]: failed to bulk create")
+		return errors.Wrap(err, "[Recorder.recordERC721RegisterTx]: failed to bulk create")
 	}
 
 	return nil
 }
 
-func (r *Recorder) retrieveBaseURI(tokenAddr string) (string, error) {
-	token, ok := r.deps.Token[r.ChainID()]
+func (r *Recorder) retrieveERC21BaseURI(tokenAddr string) (string, error) {
+	token, ok := r.deps.ERC721Token[r.ChainID()]
 	if !ok {
-		return "", errors.Errorf("[Recorder.retrieveBaseURI]: unsupported chain id %s", r.ChainID())
+		return "", errors.Errorf("[Recorder.retrieveERC21BaseURI]: unsupported chain id %s", r.ChainID())
 	}
 
 	opts := &bind.CallOpts{
@@ -117,7 +117,7 @@ func (r *Recorder) retrieveBaseURI(tokenAddr string) (string, error) {
 			return "", nil
 		}
 
-		return "", errors.Wrap(err, "[Recorder.retrieveBaseURI]: failed to retrieve base URI")
+		return "", errors.Wrap(err, "[Recorder.retrieveERC21BaseURI]: failed to retrieve base URI")
 	}
 
 	return uri, nil

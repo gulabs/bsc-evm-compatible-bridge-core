@@ -16,14 +16,16 @@ import (
 	"gorm.io/gorm/logger"
 
 	contractabi "github.com/synycboom/bsc-evm-compatible-bridge-core/abi"
-	"github.com/synycboom/bsc-evm-compatible-bridge-core/agent"
+	erc1155agent "github.com/synycboom/bsc-evm-compatible-bridge-core/agent/erc1155"
+	erc721agent "github.com/synycboom/bsc-evm-compatible-bridge-core/agent/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model"
 	observer "github.com/synycboom/bsc-evm-compatible-bridge-core/observer"
-	recorder "github.com/synycboom/bsc-evm-compatible-bridge-core/recorder/erc721"
+	"github.com/synycboom/bsc-evm-compatible-bridge-core/recorder"
 	sengine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-engine/erc721"
-	spengine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-pair-engine/erc721"
-	token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
+	spengine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-pair-engine"
+	erc1155token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc1155"
+	erc721token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/util"
 )
 
@@ -116,9 +118,12 @@ func main() {
 
 	model.InitTables(db)
 
-	swapAgents := make(map[string]agent.SwapAgent)
-	swapAgentAddresses := make(map[string]common.Address)
-	tokens := make(map[string]token.IToken)
+	erc721SwapAgents := make(map[string]erc721agent.SwapAgent)
+	erc721SwapAgentAddresses := make(map[string]common.Address)
+	erc721Tokens := make(map[string]erc721token.IToken)
+	erc1155SwapAgents := make(map[string]erc1155agent.SwapAgent)
+	erc1155SwapAgentAddresses := make(map[string]common.Address)
+	erc1155Tokens := make(map[string]erc1155token.IToken)
 	clients := make(map[string]client.ETHClient)
 	for _, c := range config.ChainConfigs {
 		ec, err := ethclient.Dial(c.Provider)
@@ -126,16 +131,26 @@ func main() {
 			panic(errors.Wrap(err, "[main]: new eth client error"))
 		}
 
-		swapAgentAddr := common.HexToAddress(c.SwapAgentAddr)
-		swapAgent, err := contractabi.NewERC721SwapAgent(swapAgentAddr, ec)
+		erc721SwapAgentAddr := common.HexToAddress(c.ERC721SwapAgentAddr)
+		erc721SwapAgent, err := contractabi.NewERC721SwapAgent(erc721SwapAgentAddr, ec)
 		if err != nil {
-			panic(errors.Wrap(err, "[main]: failed to create swap agent"))
+			panic(errors.Wrap(err, "[main]: failed to create ERC721 swap agent"))
 		}
 
-		tokens[c.ID] = token.NewToken(ec)
+		erc1155SwapAgentAddr := common.HexToAddress(c.ERC1155SwapAgentAddr)
+		erc1155SwapAgent, err := contractabi.NewERC1155SwapAgent(erc1155SwapAgentAddr, ec)
+		if err != nil {
+			panic(errors.Wrap(err, "[main]: failed to create ERC1155 swap agent"))
+		}
+
 		clients[c.ID] = client.NewClient(ec)
-		swapAgents[c.ID] = swapAgent
-		swapAgentAddresses[c.ID] = swapAgentAddr
+		erc721Tokens[c.ID] = erc721token.NewToken(ec)
+		erc721SwapAgents[c.ID] = erc721SwapAgent
+		erc721SwapAgentAddresses[c.ID] = erc721SwapAgentAddr
+
+		erc1155Tokens[c.ID] = erc1155token.NewToken(ec)
+		erc1155SwapAgents[c.ID] = erc1155SwapAgent
+		erc1155SwapAgentAddresses[c.ID] = erc1155SwapAgentAddr
 	}
 
 	recorders := make(map[string]recorder.IRecorder)
@@ -150,10 +165,12 @@ func main() {
 			ChainName: c.Name,
 			HMACKey:   config.KeyManagerConfig.HMACKey,
 		}, &recorder.Dependencies{
-			Client:    clients,
-			DB:        db.Session(&gorm.Session{}),
-			SwapAgent: swapAgents,
-			Token:     tokens,
+			Client:           clients,
+			DB:               db.Session(&gorm.Session{}),
+			ERC721SwapAgent:  erc721SwapAgents,
+			ERC721Token:      erc721Tokens,
+			ERC1155SwapAgent: erc1155SwapAgents,
+			ERC1155Token:     erc1155Tokens,
 		})
 	}
 
@@ -174,33 +191,35 @@ func main() {
 		ob.Start()
 
 		e := spengine.NewEngine(&spengine.Config{
-			ChainID:            chainID,
-			ConfirmNum:         c.ConfirmNum,
-			ExplorerURL:        c.ExplorerUrl,
-			PrivateKey:         c.PrivateKey,
-			MaxTrackRetry:      c.MaxTrackRetry,
-			SwapAgentAddresses: swapAgentAddresses,
+			ChainID:                   chainID,
+			ConfirmNum:                c.ConfirmNum,
+			ExplorerURL:               c.ExplorerUrl,
+			PrivateKey:                c.PrivateKey,
+			MaxTrackRetry:             c.MaxTrackRetry,
+			ERC721SwapAgentAddresses:  erc721SwapAgentAddresses,
+			ERC1155SwapAgentAddresses: erc1155SwapAgentAddresses,
 		}, &spengine.Dependencies{
-			Client:    clients,
-			DB:        db.Session(&gorm.Session{}),
-			Recorder:  recorders,
-			SwapAgent: swapAgents,
+			Client:           clients,
+			DB:               db.Session(&gorm.Session{}),
+			Recorder:         recorders,
+			ERC721SwapAgent:  erc721SwapAgents,
+			ERC1155SwapAgent: erc1155SwapAgents,
 		})
 		e.Start()
 
 		se := sengine.NewEngine(&sengine.Config{
-			ChainID:            chainID,
-			ConfirmNum:         c.ConfirmNum,
-			ExplorerURL:        c.ExplorerUrl,
-			PrivateKey:         c.PrivateKey,
-			MaxTrackRetry:      c.MaxTrackRetry,
-			SwapAgentAddresses: swapAgentAddresses,
+			ChainID:                  chainID,
+			ConfirmNum:               c.ConfirmNum,
+			ExplorerURL:              c.ExplorerUrl,
+			PrivateKey:               c.PrivateKey,
+			MaxTrackRetry:            c.MaxTrackRetry,
+			ERC721SwapAgentAddresses: erc721SwapAgentAddresses,
 		}, &sengine.Dependencies{
-			Client:    clients,
-			DB:        db.Session(&gorm.Session{}),
-			Recorder:  recorders,
-			SwapAgent: swapAgents,
-			Token:     tokens,
+			Client:          clients,
+			DB:              db.Session(&gorm.Session{}),
+			Recorder:        recorders,
+			ERC721SwapAgent: erc721SwapAgents,
+			ERC721Token:     erc721Tokens,
 		})
 		se.Start()
 	}

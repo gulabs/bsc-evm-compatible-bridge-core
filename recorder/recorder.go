@@ -5,11 +5,13 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/synycboom/bsc-evm-compatible-bridge-core/agent"
+	erc1155agent "github.com/synycboom/bsc-evm-compatible-bridge-core/agent/erc1155"
+	erc721agent "github.com/synycboom/bsc-evm-compatible-bridge-core/agent/erc721"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/client"
 	corecommon "github.com/synycboom/bsc-evm-compatible-bridge-core/common"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model/block"
-	token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
+	erc1155token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc1155"
+	erc721token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
 )
 
 type IRecorder interface {
@@ -27,10 +29,12 @@ type Config struct {
 }
 
 type Dependencies struct {
-	Client    map[string]client.ETHClient
-	DB        *gorm.DB
-	SwapAgent map[string]agent.SwapAgent
-	Token     map[string]token.IToken
+	Client           map[string]client.ETHClient
+	DB               *gorm.DB
+	ERC721SwapAgent  map[string]erc721agent.SwapAgent
+	ERC721Token      map[string]erc721token.IToken
+	ERC1155SwapAgent map[string]erc1155agent.SwapAgent
+	ERC1155Token     map[string]erc1155token.IToken
 }
 
 type Recorder struct {
