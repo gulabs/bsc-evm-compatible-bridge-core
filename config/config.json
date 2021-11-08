@@ -19,7 +19,8 @@
     "provider": "http://localhost:19545",
     "private_key": "0000000000000000000000000000000000000000000000000000000000000001",
     "confirm_num": 2,
-    "swap_agent_addr": "0xDe09E74d4888Bc4e65F589e8c13Bce9F71DdF4c7",
+    "erc_721_swap_agent_addr": "0xDe09E74d4888Bc4e65F589e8c13Bce9F71DdF4c7",
+    "erc_1155_swap_agent_addr": "0x51a240271ab8ab9f9a21c82d9a85396b704e164d",
     "explorer_url": "https://testnet.chain1.com/tx",
     "max_track_retry": 5,
     "wait_milli_sec_between_tx": 100
@@ -33,7 +34,8 @@
     "provider": "http://localhost:19546",
     "private_key": "0000000000000000000000000000000000000000000000000000000000000001",
     "confirm_num": 2,
-    "swap_agent_addr": "0xDe09E74d4888Bc4e65F589e8c13Bce9F71DdF4c7",
+    "erc_721_swap_agent_addr": "0xDe09E74d4888Bc4e65F589e8c13Bce9F71DdF4c7",
+    "erc_1155_swap_agent_addr": "0x51a240271ab8ab9f9a21c82d9a85396b704e164d",
     "explorer_url": "https://testnet.chain2.com/tx",
     "max_track_retry": 5,
     "wait_milli_sec_between_tx": 100

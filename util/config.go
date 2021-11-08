@@ -115,7 +115,8 @@ type ChainConfig struct {
 	PrivateKey             string `json:"private_key"`
 	Provider               string `json:"provider"`
 	ConfirmNum             int64  `json:"confirm_num"`
-	SwapAgentAddr          string `json:"swap_agent_addr"`
+	ERC721SwapAgentAddr    string `json:"erc_721_swap_agent_addr"`
+	ERC1155SwapAgentAddr   string `json:"erc_1155_swap_agent_addr"`
 	ExplorerUrl            string `json:"explorer_url"`
 	MaxTrackRetry          int64  `json:"max_track_retry"`
 	WaitMilliSecBetweenTx  int64  `json:"wait_milli_sec_between_tx"`
@@ -134,8 +135,8 @@ func (cfg ChainConfig) Validate() {
 	if cfg.ConfirmNum <= 0 {
 		panic("confirm_num should be larger than 0")
 	}
-	if !ethcom.IsHexAddress(cfg.SwapAgentAddr) {
-		panic(fmt.Sprintf("invalid swap_contract_addr: %s", cfg.SwapAgentAddr))
+	if !ethcom.IsHexAddress(cfg.ERC721SwapAgentAddr) {
+		panic(fmt.Sprintf("invalid swap_contract_addr: %s", cfg.ERC721SwapAgentAddr))
 	}
 	if cfg.MaxTrackRetry <= 0 {
 		panic("max_track_retry should be larger than 0")
