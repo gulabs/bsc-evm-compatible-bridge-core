@@ -50,6 +50,15 @@ func BigIntSliceToStrSlice(vv []*big.Int) []string {
 	return ss
 }
 
+func StrSliceToBigIntSlice(ss []string) []*big.Int {
+	vv := make([]*big.Int, len(ss))
+	for idx, s := range ss {
+		vv[idx] = StrToBigInt(s)
+	}
+
+	return vv
+}
+
 func TxOpts(ctx context.Context, ethClient client.ETHClient, privateKey string, chainID *big.Int) (*bind.TransactOpts, error) {
 	key, err := crypto.HexToECDSA(privateKey)
 	if err != nil {

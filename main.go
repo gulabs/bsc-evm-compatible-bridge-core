@@ -208,18 +208,21 @@ func main() {
 		e.Start()
 
 		se := sengine.NewEngine(&sengine.Config{
-			ChainID:                  chainID,
-			ConfirmNum:               c.ConfirmNum,
-			ExplorerURL:              c.ExplorerUrl,
-			PrivateKey:               c.PrivateKey,
-			MaxTrackRetry:            c.MaxTrackRetry,
-			ERC721SwapAgentAddresses: erc721SwapAgentAddresses,
+			ChainID:                   chainID,
+			ConfirmNum:                c.ConfirmNum,
+			ExplorerURL:               c.ExplorerUrl,
+			PrivateKey:                c.PrivateKey,
+			MaxTrackRetry:             c.MaxTrackRetry,
+			ERC721SwapAgentAddresses:  erc721SwapAgentAddresses,
+			ERC1155SwapAgentAddresses: erc1155SwapAgentAddresses,
 		}, &sengine.Dependencies{
-			Client:          clients,
-			DB:              db.Session(&gorm.Session{}),
-			Recorder:        recorders,
-			ERC721SwapAgent: erc721SwapAgents,
-			ERC721Token:     erc721Tokens,
+			Client:           clients,
+			DB:               db.Session(&gorm.Session{}),
+			Recorder:         recorders,
+			ERC721SwapAgent:  erc721SwapAgents,
+			ERC721Token:      erc721Tokens,
+			ERC1155SwapAgent: erc1155SwapAgents,
+			ERC1155Token:     erc1155Tokens,
 		})
 		se.Start()
 	}

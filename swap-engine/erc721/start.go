@@ -13,10 +13,17 @@ const (
 )
 
 func (e *Engine) Start() {
+	// ERC721
 	go e.run(e.manageERC721OngoingRequest, watchSwapEventDelay)
 	go e.run(e.manageERC721ConfirmedSwap, watchSwapEventDelay)
 	go e.run(e.manageERC721TxCreatedSwap, watchSwapEventDelay)
 	go e.run(e.manageERC721TxSentSwap, watchSwapEventDelay)
+
+	// ERC1155
+	go e.run(e.manageERC1155OngoingRequest, watchSwapEventDelay)
+	go e.run(e.manageERC1155ConfirmedSwap, watchSwapEventDelay)
+	go e.run(e.manageERC1155TxCreatedSwap, watchSwapEventDelay)
+	go e.run(e.manageERC1155TxSentSwap, watchSwapEventDelay)
 }
 
 func (e *Engine) run(fn func(), delay time.Duration) {
