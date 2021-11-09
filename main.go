@@ -22,7 +22,7 @@ import (
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/model"
 	observer "github.com/synycboom/bsc-evm-compatible-bridge-core/observer"
 	"github.com/synycboom/bsc-evm-compatible-bridge-core/recorder"
-	sengine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-engine/erc721"
+	sengine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-engine"
 	spengine "github.com/synycboom/bsc-evm-compatible-bridge-core/swap-pair-engine"
 	erc1155token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc1155"
 	erc721token "github.com/synycboom/bsc-evm-compatible-bridge-core/token/erc721"
