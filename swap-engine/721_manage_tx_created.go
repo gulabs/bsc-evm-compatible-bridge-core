@@ -128,9 +128,9 @@ func (e *Engine) manageERC721TxCreatedSwap() {
 				util.Logger.Error(
 					errors.Wrapf(err, "[Engine.manageERC721TxCreatedSwap]: failed to update Swap %s to '%s' state", s.ID, s.State),
 				)
-
-				continue
 			}
+
+			continue
 		}
 
 		gasPrice := big.NewInt(0)
