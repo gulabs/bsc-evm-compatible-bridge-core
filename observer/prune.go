@@ -18,15 +18,18 @@ func (ob *Observer) Prune() {
 			continue
 		}
 
-		err = ob.deps.DB.Where(
-			"chain_id = ? and height < ?",
-			ob.deps.Recorder.ChainID(),
-			curBlockLog.Height-common.ObserverMaxBlockNumber,
-		).Delete(
-			block.Log{},
-		).Error
-		if err != nil {
-			util.Logger.Errorf("[Observer.Prune]: prune block logs error, err=%s", err.Error())
+		height := curBlockLog.Height - common.ObserverMaxBlockNumber
+		if height > 0 {
+			err = ob.deps.DB.Where(
+				"chain_id = ? and height < ?",
+				ob.deps.Recorder.ChainID(),
+				height,
+			).Delete(
+				block.Log{},
+			).Error
+			if err != nil {
+				util.Logger.Errorf("[Observer.Prune]: prune block logs error, err=%s", err.Error())
+			}
 		}
 
 		time.Sleep(common.ObserverPruneInterval)
