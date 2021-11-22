@@ -35,6 +35,8 @@ func (ob *Observer) Update() {
 				util.Logger.Errorf("[Observer.Update]: fetch from chain id %s error, err=%s", chainID, err.Error())
 			}
 
+			util.Logger.Debugf("[Observer.Update]: failed to fetch from chain id %s error, err=%s", chainID, err.Error())
+
 			time.Sleep(ob.conf.FetchInterval)
 		}
 	}
